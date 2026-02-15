@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="orange-bg">
+
+<h1>Controller Panel</h1>
+
+<button onclick="start()">Next Question</button>
+<button onclick="results()">Show Results</button>
+
+<script>
+const socket = io();
+
+function start() {
+    socket.emit("startQuestion");
+}
+
+function results() {
+    socket.emit("showResults");
+}
+</script>
+</body>
+</html>

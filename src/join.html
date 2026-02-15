@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="blue-bg">
+<h1>Select Your Class</h1>
+
+<div class="button-grid">
+<button class="group-btn">Class 1</button>
+<button class="group-btn">Class 2</button>
+<button class="group-btn">Class 3</button>
+<button class="group-btn">Class 4</button>
+</div>
+
+<script>
+const socket = io();
+
+document.querySelectorAll(".group-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        localStorage.setItem("group", btn.innerText);
+
+        btn.classList.add("selected");
+
+        setTimeout(() => {
+            window.location.href = "game.html";
+        }, 800);
+    });
+});
+</script>
+</body>
+</html>

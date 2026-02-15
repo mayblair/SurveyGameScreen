@@ -1,0 +1,46 @@
+body {
+    font-family: Arial;
+    text-align: center;
+    color: white;
+}
+
+.blue-bg {
+    background-color: #001146;
+}
+
+.orange-bg {
+    background-color: rgb(255,165,0);
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 40px;
+}
+
+button {
+    padding: 20px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.group-btn {
+    background: white;
+    color: #001146;
+}
+
+.group-btn.selected {
+    background: lime;
+}
+
+.answer-btn {
+    background: #001146;
+    color: white;
+}
+
+.answer-btn:hover {
+    background: purple;
+}

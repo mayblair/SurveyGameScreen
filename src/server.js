@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static("public"));
+app.use(express.static(__dirname));
 
 // ----------------------------
 // Game State
@@ -86,11 +86,11 @@ io.on("connection", (socket) => {
 // ----------------------------
 
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/public/join.html");
+    res.sendFile(__dirname + "/join.html");
 });
 
 app.get("/controller", (req, res) => {
-    res.sendFile(__dirname + "/public/controller.html");
+    res.sendFile(__dirname + "/controller.html");
 });
 
 const PORT = process.env.PORT || 3000;

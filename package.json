@@ -1,10 +1,10 @@
 {
   "name": "survey-game",
   "version": "1.0.0",
-  "description": "Classroom survey trivia game",
-  "main": "server.js",
+  "description": "GWC trivia game",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/server.js"
   },
   "dependencies": {
     "express": "^4.18.2",

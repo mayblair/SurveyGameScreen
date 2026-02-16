@@ -1,15 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="style.css">
-<script src="/socket.io/socket.io.js"></script>
+    <title>Survey Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
 </head>
-<body class="orange-bg">
+<body class="blue-bg">
 
-<h2 id="timer">20</h2>
-<h1 id="question"></h1>
+<!-- JOIN SCREEN -->
+<div id="joinScreen" class="screen blue-bg" style="display:block;">
+    <h1>Select Your Class</h1>
+    <div class="button-grid">
+        <button class="group-btn">Class 1</button>
+        <button class="group-btn">Class 2</button>
+        <button class="group-btn">Class 3</button>
+        <button class="group-btn">Class 4</button>
+    </div>
+</div>
 
-<div class="button-grid" id="answers"></div>
+<!-- WAITING SCREEN -->
+<div id="waitingScreen" class="screen orange-bg" style="display:none;">
+    <h1 id="waitingMessage">Waiting for the next question...</h1>
+</div>
+
+<!-- QUESTION SCREEN -->
+<div id="questionScreen" class="screen orange-bg" style="display:none;">
+    <h2 id="timer"></h2>
+    <h1 id="question"></h1>
+    <div id="answers" class="button-grid"></div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="resultsScreen" class="screen blue-bg" style="display:none;">
+    <h1>Results</h1>
+
+    <div class="results-grid">
+
+        <div>
+            <h2>Current Question</h2>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Response Rate</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="currentResults"></tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2>Total Game</h2>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Response Rate</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="totalResults"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
 
 <script src="client.js"></script>
 </body>

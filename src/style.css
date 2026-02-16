@@ -2,6 +2,7 @@ body {
     font-family: Arial;
     text-align: center;
     color: white;
+    font-size: 20px;
 }
 
 .blue-bg {
@@ -43,4 +44,42 @@ button {
 
 .answer-btn:hover {
     background: purple;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 30px;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    color: #001146;
+    font-size: 18px;
+}
+
+.results-table th {
+    background-color: #001146;
+    color: white;
+    padding: 10px;
+}
+
+.results-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.results-table tr:hover {
+    background-color: #f2f2f2;
+}
+
+
+#waitingMessage {
+    font-size: 40px;
+    margin-top: 200px;
+    text-align: center;
 }

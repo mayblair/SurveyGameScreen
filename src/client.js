@@ -1,5 +1,6 @@
 const socket = io();
 
+
 const joinScreen = document.getElementById("joinScreen");
 const waitingScreen = document.getElementById("waitingScreen");
 const questionScreen = document.getElementById("questionScreen");

@@ -61,6 +61,11 @@ let questions = [
         correct: "What"
     },
     {
+            question: "Who is What?",
+            answers: ["what", "What", "whaa", "watt"],
+            correct: "whaa"
+        },
+    {
         question: "Who is Ms. Blair?",
         answers: ["Student", "Teacher", "Water", "Helium"],
         correct: "Teacher"

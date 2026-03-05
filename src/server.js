@@ -48,28 +48,38 @@ let questions = [
     {
         question: "How many weeks of paid maternity leave are the majority of people who give birth in America receiving?",
         answers: ["0", "5", "12", "15"],
-        correct: "0"
+        correct: "0",
+        explanation: "Only 12-41% of birthing people, differing between the private and public sector, have any access to paid maternity leave. Even so, only 54% are eligible for the Family and Medical Leave Act, which guarantees 12 weeks of UNPAID job protection."
     },
     {
         question: "How long after Bobbi Gibbs became the first woman to complete the Boston Marathon in 1966, did it become legal for women to register in major marathons?",
         answers: ["7 months", "2 years", "6 years", "15 years"],
-        correct: "6 years"
+        correct: "6 years",
+        explanation: "Women like Bobbi Gibbs and Kathrine Switzer, pictured running in the 1967 Boston marathon despite physical attempts to remove her, challenged the narrative that women were “too fragile for long distance running”"
     },
     {
         question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
         answers: ["Dishwasher", "Electric Refrigerator", "Coffee Filter", "Toaster"],
-        correct: "Dishwasher"
-    }
+        correct: "Dishwasher",
+        explanation: "While Cochrane invented the dishwasher, all other appliances mentioned were invented by other women."
+    },
     {
         question: "What percentage of the people in Milton CS classes were non-male identifying in 2024?",
         answers: ["53%", "41%", "60%", "33%"],
-        correct: "41%"
+        correct: "41%",
+        explanation: ""
     },
     {
         question: "Women earned an average of ____ of what men earned in 2024?",
         answers: ["53%", "85%", "60%", "33%"],
         correct: "85%"
+        explanation: ""
     },
+        question: "What percentage of the people in Milton CS classes were non-male identifying in 2025?",
+        answers: ["53%", "41%", "60%", "33%"],
+        correct: "33%",
+        explanation: ""
+    }
 ];
 
 // ----------------------------
@@ -85,7 +95,8 @@ function getRandomQuestion() {
         id: Date.now(),   // unique ID each time
         question: q.question,
         answers: shuffledAnswers,
-        correct: q.correct
+        correct: q.correct,
+        explanation: q.explanation
     };
 }
 
@@ -100,9 +111,11 @@ io.on("connection", (socket) => {
         // do not generate new question if not on results screen
        if (gameState.currentScreen !== "join" && gameState.currentScreen !== "results")
         {   return;   }
+
         gameState.currentQuestion = getRandomQuestion();
         gameState.currentScreen = "question";
         gameState.timer = 20;
+
 
         // reset responses each round
         for (let group in gameState.groupResponses) {
@@ -121,7 +134,7 @@ io.on("connection", (socket) => {
 
             if (gameState.timer <= 0) {
                 clearInterval(countdownInterval);
-                gameState.currentScreen = "results";
+                gameState.currentScreen = "answer";
                 io.emit("updateState", gameState);
             }
 
@@ -154,6 +167,14 @@ io.on("connection", (socket) => {
         if (answer === gameState.currentQuestion.correct) {
             gameState.groupScores[group] += gameState.timer;
         }
+    });
+
+    socket.on("showAnswer", () => {
+
+        if (gameState.currentScreen !== "question") return;
+
+        gameState.currentScreen = "answer";
+        io.emit("updateState", gameState);
     });
 
 });

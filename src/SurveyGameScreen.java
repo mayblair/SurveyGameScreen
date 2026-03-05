@@ -26,6 +26,8 @@ public class SurveyGameScreen extends JFrame {
             "Class 4"
     };
 
+    private String supplementaryText = "";
+
     // Map: group -> score
     private HashMap<String, Integer> groupScores = new HashMap<>();
 
@@ -39,6 +41,7 @@ public class SurveyGameScreen extends JFrame {
     // UI Components
     // -----------------------------
 
+    private JLabel supplementaryLabel;
     private JPanel mainPanel;
     private JPanel groupPanel;
     private JPanel questionPanel;
@@ -49,6 +52,14 @@ public class SurveyGameScreen extends JFrame {
     private JLabel statusLabel;
 
     private String selectedGroup = null;
+
+    private enum GameState {
+        QUESTION,
+        ANSWER,
+        RESULTS
+    }
+
+    private GameState currentState = GameState.QUESTION;
 
     // -----------------------------
     // Constructor
@@ -94,6 +105,14 @@ public class SurveyGameScreen extends JFrame {
         questionLabel.setFont(new Font("Arial", Font.BOLD, 22));
         questionPanel.add(questionLabel);
 
+        supplementaryLabel = new JLabel("");
+        supplementaryLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        supplementaryLabel.setForeground(Color.BLACK);
+
+        questionPanel.setLayout(new GridLayout(2, 1));
+        questionPanel.add(questionLabel);
+        questionPanel.add(supplementaryLabel);
+
         // Group Selection Panel
         groupPanel = new JPanel();
         groupPanel.setLayout(new GridLayout(1, groups.length, 15, 15));
@@ -129,13 +148,29 @@ public class SurveyGameScreen extends JFrame {
 
         // Results Panel
         resultsPanel = new JPanel(new BorderLayout());
+        // Controller Panel
+        JPanel controllerPanel = new JPanel(new GridLayout(1, 3, 15, 15));
+
+        JButton showAnswerButton = new JButton("Show Answer");
+        JButton showResultsButton = new JButton("Show Results");
+        JButton nextQuestionButton = new JButton("Next Question");
+
+        showAnswerButton.addActionListener(e -> showAnswerScreen());
+        showResultsButton.addActionListener(e -> showResultsScreen());
+        nextQuestionButton.addActionListener(e -> nextQuestion());
+
+        controllerPanel.add(showAnswerButton);
+        controllerPanel.add(showResultsButton);
+        controllerPanel.add(nextQuestionButton);
+
+
         statusLabel = new JLabel("Select your group to begin.");
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         resultsPanel.add(statusLabel, BorderLayout.CENTER);
 
-        JButton showResultsButton = new JButton("Show Results");
         showResultsButton.addActionListener(e -> displayResults());
         resultsPanel.add(showResultsButton, BorderLayout.SOUTH);
+
 
         // Layout Structure
         JPanel centerPanel = new JPanel(new GridLayout(2, 1));
@@ -145,6 +180,7 @@ public class SurveyGameScreen extends JFrame {
         mainPanel.add(questionPanel, BorderLayout.NORTH);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(resultsPanel, BorderLayout.SOUTH);
+        mainPanel.add(controllerPanel, BorderLayout.WEST);
 
         add(mainPanel);
     }
@@ -176,6 +212,9 @@ public class SurveyGameScreen extends JFrame {
     private void handleAnswerSelection(int answerIndex) {
         if (selectedGroup == null) {
             statusLabel.setText("Please select a group first!");
+            return;
+        }
+        if (currentState != GameState.QUESTION) {
             return;
         }
 
@@ -222,6 +261,47 @@ public class SurveyGameScreen extends JFrame {
                 resultsText.toString(),
                 "Group Results",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showAnswerScreen() {
+
+        if (currentState != GameState.QUESTION) {
+            statusLabel.setText("Cannot show answer yet.");
+            return;
+        }
+
+        currentState = GameState.ANSWER;
+
+        supplementaryLabel.setText(supplementaryText);
+
+        // Reveal correct answer
+        answerButtons[correctAnswerIndex].setBackground(Color.GREEN);
+    }
+
+    private void showResultsScreen() {
+
+        if (currentState != GameState.ANSWER) {
+            statusLabel.setText("You must show the answer first.");
+            return;
+        }
+
+        currentState = GameState.RESULTS;
+        displayResults();
+    }
+
+    private void nextQuestion() {
+
+        if (currentState != GameState.RESULTS) {
+            statusLabel.setText("You must show results first.");
+            return;
+        }
+
+        currentState = GameState.QUESTION;
+
+        resetRound();
+        supplementaryLabel.setText("");
+
+        // Optional: load next question here
     }
 
     // -----------------------------

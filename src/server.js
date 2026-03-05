@@ -70,6 +70,11 @@ let questions = [
         answers: ["Student", "Teacher", "Water", "Helium"],
         correct: "Teacher"
     }
+    {
+            question: "Who is Ms. Blair?",
+            answers: ["Student", "Teacher", "Water", "Helium"],
+            correct: "Teacher"
+        }
 ];
 
 // ----------------------------

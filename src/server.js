@@ -59,7 +59,7 @@ let questions = [
         question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
         answers: ["Dishwasher", "Electric Refrigerator", "Coffee Filter", "Toaster"],
         correct: "Dishwasher"
-    }
+    },
     {
         question: "What percentage of the people in Milton CS classes were non-male identifying in 2024?",
         answers: ["53%", "41%", "60%", "33%"],
@@ -69,7 +69,7 @@ let questions = [
         question: "What percentage of the people in Milton CS classes were non-male identifying in 2025?",
         answers: ["53%", "41%", "60%", "33%"],
         correct: "33%"
-    },
+    }
 ];
 
 // ----------------------------

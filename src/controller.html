@@ -104,10 +104,34 @@
                     const btn = document.createElement("button");
                     btn.innerText = ans;
                     btn.className = "answer-btn";
+                    btn.style.backgroundColor = "";
+                    btn.style.color = "";
                     btn.disabled = true; // controller does not answer
                     answersEl.appendChild(btn);
                 });
             }
+        }
+
+        // ANSWER SCREEN (Reveal Correct Answer)
+        if (state.currentScreen === "answer" && state.currentQuestion) {
+
+            questionScreen.style.display = "block";
+            resultsScreen.style.display = "none";
+
+            timerEl.innerText = state.timer;
+            questionEl.innerText = state.currentQuestion.question;
+
+            // Color correct answer green
+            document.querySelectorAll(".answer-btn").forEach(btn => {
+                if (btn.innerText === state.currentQuestion.correct) {
+                   btn.style.backgroundColor = "#2ecc71"; // softer green
+                    btn.style.transition = "background-color 0.3s ease";
+                    btn.style.color = "white";
+                }
+            });
+
+            // Show supplementary explanation
+            supplementaryEl.innerText = state.currentQuestion.explanation || "";
         }
 
         // RESULTS SCREEN

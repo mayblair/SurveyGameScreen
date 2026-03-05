@@ -1,28 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Teacher Controller</title>
     <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
+
 <body class="orange-bg">
 
-<h1>Controller</h1>
+<h1>Teacher Controller</h1>
 
+<!-- QUESTION DISPLAY -->
+<div id="questionScreen">
+
+    <h2 id="timer"></h2>
+    <h1 id="question"></h1>
+
+    <div id="answers" class="button-grid"></div>
+
+    <div id="supplementaryText" style="margin-top:20px; font-size:18px; color:black;"></div>
+
+</div>
+
+<!-- RESULTS DISPLAY -->
+<div id="resultsScreen" style="display:none;">
+    <h1>Results</h1>
+    <div id="resultsContainer"></div>
+</div>
+
+<hr style="margin:40px 0;">
+
+<!-- CONTROL BUTTONS -->
 <div class="button-grid">
-    <button onclick="start()">Next Question</button>
-    <button onclick="results()">Show Results</button>
+    <button onclick="startQuestion()">Next Question</button>
+    <button onclick="showAnswer()">Show Answer</button>
+    <button onclick="showResults()">Show Results</button>
 </div>
 
 <script>
-const socket = io();
 
-function start() {
-    socket.emit("startQuestion");
-}
+    const socket = io();
 
-function results() {
-    socket.emit("showResults");
-}
+    const timerEl = document.getElementById("timer");
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const supplementaryEl = document.getElementById("supplementaryText");
+    const resultsScreen = document.getElementById("resultsScreen");
+    const questionScreen = document.getElementById("questionScreen");
+
+    let currentQuestionId = null;
+
+    // -------- SOCKET STATE --------
+
+    socket.on("updateState", (state) => {
+
+        // QUESTION SCREEN
+        if (state.currentScreen === "question" && state.currentQuestion) {
+
+            questionScreen.style.display = "block";
+            resultsScreen.style.display = "none";
+
+            timerEl.innerText = state.timer;
+            questionEl.innerText = state.currentQuestion.question;
+
+            // Only rebuild if new question
+            if (state.currentQuestion.id !== currentQuestionId) {
+
+                currentQuestionId = state.currentQuestion.id;
+                answersEl.innerHTML = "";
+                supplementaryEl.innerText = "";
+
+                state.currentQuestion.answers.forEach(ans => {
+
+                    const btn = document.createElement("button");
+                    btn.innerText = ans;
+                    btn.className = "answer-btn";
+                    btn.disabled = true; // controller does not answer
+                    answersEl.appendChild(btn);
+                });
+            }
+        }
+
+        // RESULTS SCREEN
+        if (state.currentScreen === "results") {
+
+            questionScreen.style.display = "none";
+            resultsScreen.style.display = "block";
+
+            renderResults(state);
+        }
+    });
+
+    // -------- CONTROLS --------
+
+    function startQuestion() {
+        socket.emit("startQuestion");
+    }
+
+    function showAnswer() {
+        socket.emit("showAnswer");
+    }
+
+    function showResults() {
+        socket.emit("showResults");
+    }
+
+    // -------- RENDER RESULTS --------
+
+    function renderResults(state) {
+
+        const container = document.getElementById("resultsContainer");
+        container.innerHTML = "";
+
+        for (let group in state.groupScores) {
+
+            container.innerHTML += `
+                <div style="margin:10px; font-size:20px;">
+                    <strong>${group}</strong> —
+                    Score: ${state.groupScores[group]}
+                </div>
+            `;
+        }
+    }
+
 </script>
 
 </body>

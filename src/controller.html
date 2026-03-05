@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Teacher Controller</title>
+    <title>Controller</title>
     <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body class="orange-bg">
 
-<h1>Teacher Controller</h1>
+<h1>Controller</h1>
 
 <!-- QUESTION DISPLAY -->
 <div id="questionScreen">
@@ -18,7 +18,7 @@
 
     <div id="answers" class="button-grid"></div>
 
-    <div id="supplementaryText" style="margin-top:20px; font-size:18px; color:black;"></div>
+    <div id="supplementaryText" class="supplementary-box"></div>
 
 </div>
 
@@ -76,6 +76,13 @@
     const supplementaryEl = document.getElementById("supplementaryText");
     const resultsScreen = document.getElementById("resultsScreen");
     const questionScreen = document.getElementById("questionScreen");
+
+    const totalStudents = {
+        "Class 1": 187,
+        "Class 2": 189,
+        "Class 3": 173,
+        "Class 4": 162
+    };
 
     let currentQuestionId = null;
 

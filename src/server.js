@@ -65,17 +65,7 @@ let questions = [
             answers: ["what", "What", "whaa", "watt"],
             correct: "whaa"
         },
-    {
-        question: "Who is Ms. Blair?",
-        answers: ["Student", "Teacher", "Water", "Helium"],
-        correct: "Teacher"
-    }
-    {
-            question: "Who is Ms. Blair?",
-            answers: ["Student", "Teacher", "Water", "Helium"],
-            correct: "Teacher"
-        }
-];
+
 
 // ----------------------------
 // Randomize Question + Answers

@@ -90,7 +90,7 @@ function getRandomQuestion() {
         id: Date.now(),   // unique ID each time
         question: q.question,
         answers: shuffledAnswers,
-        correct: q.correct
+        correct: q.correct,
         explanation: q.explanation
     };
 }

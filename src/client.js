@@ -55,6 +55,20 @@ socket.on("updateState", (state) => {
         showScreen("results");
         renderResults(state);
     }
+
+    if (state.currentScreen === "answer") {
+
+        document.getElementById("supplementaryText").innerText =
+            state.currentQuestion.explanation;
+
+        // highlight correct answer
+        document.querySelectorAll(".answer-btn").forEach(btn => {
+            if (btn.innerText === state.currentQuestion.correct) {
+                btn.style.background = "green";
+            }
+        });
+    }
+
 });
 
 // ---------------- SCREEN CONTROL ----------------
@@ -142,79 +156,94 @@ function renderQuestion(state) {
 
 function renderResults(state) {
 
-    const currentBody = document.getElementById("currentResults");
-    const totalBody = document.getElementById("totalResults");
-
-    currentBody.innerHTML = "";
-    totalBody.innerHTML = "";
-
-    let currentRows = [];
-    let totalRows = [];
+    const container = document.getElementById("simpleResults");
+    container.innerHTML = "";
 
     for (let group in state.groupScores) {
 
-        const classSize = totalStudents[group] || 1;
-
-        // ---------- CURRENT QUESTION ----------
-        const currentResponses = state.groupResponses[group];
-        const currentScore = state.groupScores[group];
-
-        const currentResponseRate = Math.round(
-            (currentResponses / classSize) * 100
-        );
-
-        currentRows.push({
-            group,
-            responseRate: currentResponseRate,
-            score: currentScore
-        });
-
-        // ---------- TOTAL GAME ----------
-        const totalResponses = state.totalResponses[group];
-        const totalScore = state.totalScores[group];
-
-        const totalResponseRate = state.questionsPlayed > 0
-            ? Math.round(
-                (totalResponses / (classSize * state.questionsPlayed)) * 100
-              )
-            : 0;
-
-        const averageScore = state.questionsPlayed > 0
-            ? Math.round(totalScore / state.questionsPlayed)
-            : 0;
-
-        totalRows.push({
-            group,
-            responseRate: totalResponseRate,
-            score: averageScore
-        });
+        container.innerHTML += `
+            <div style="font-size:24px; margin:15px;">
+                ${group}: ${state.groupScores[group]} points
+            </div>
+        `;
     }
-
-    // TODO SORT BY SCORE DESCENDING
-
-    currentRows.forEach(r => {
-        currentBody.innerHTML += `
-            <tr>
-                <td>${r.group}</td>
-                <td>${r.responseRate}%</td>
-                <td class="score-cell" data-target="${r.score}">0</td>
-            </tr>
-        `;
-    });
-
-    totalRows.forEach(r => {
-        totalBody.innerHTML += `
-            <tr>
-                <td>${r.group}</td>
-                <td>${r.responseRate}%</td>
-                <td class="score-cell" data-target="${r.score}">0</td>
-            </tr>
-        `;
-    });
-
-    // TODO animateScores();
 }
-
+//
+//function renderResults(state) {
+//
+//    const currentBody = document.getElementById("currentResults");
+//    const totalBody = document.getElementById("totalResults");
+//
+//    currentBody.innerHTML = "";
+//    totalBody.innerHTML = "";
+//
+//    let currentRows = [];
+//    let totalRows = [];
+//
+//    for (let group in state.groupScores) {
+//
+//        const classSize = totalStudents[group] || 1;
+//
+//        // ---------- CURRENT QUESTION ----------
+//        const currentResponses = state.groupResponses[group];
+//        const currentScore = state.groupScores[group];
+//
+//        const currentResponseRate = Math.round(
+//            (currentResponses / classSize) * 100
+//        );
+//
+//        currentRows.push({
+//            group,
+//            responseRate: currentResponseRate,
+//            score: currentScore
+//        });
+//
+//        // ---------- TOTAL GAME ----------
+//        const totalResponses = state.totalResponses[group];
+//        const totalScore = state.totalScores[group];
+//
+//        const totalResponseRate = state.questionsPlayed > 0
+//            ? Math.round(
+//                (totalResponses / (classSize * state.questionsPlayed)) * 100
+//              )
+//            : 0;
+//
+//        const averageScore = state.questionsPlayed > 0
+//            ? Math.round(totalScore / state.questionsPlayed)
+//            : 0;
+//
+//        totalRows.push({
+//            group,
+//            responseRate: totalResponseRate,
+//            score: averageScore
+//        });
+//    }
+//
+//    // TODO SORT BY SCORE DESCENDING
+//
+//    currentRows.forEach(r => {
+//        currentBody.innerHTML += `
+//            <tr>
+//                <td>${r.group}</td>
+//                <td>${r.responseRate}%</td>
+//                <td class="score-cell" data-target="${r.score}">0</td>
+//            </tr>
+//        `;
+//    });
+//
+//    totalRows.forEach(r => {
+//        totalBody.innerHTML += `
+//            <tr>
+//                <td>${r.group}</td>
+//                <td>${r.responseRate}%</td>
+//                <td class="score-cell" data-target="${r.score}">0</td>
+//            </tr>
+//        `;
+//    });
+//
+//    // TODO animateScores();
+//}
+//
 
 
 showScreen("join"); //show join screen on startup

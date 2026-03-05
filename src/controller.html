@@ -23,12 +23,41 @@
 </div>
 
 <!-- RESULTS DISPLAY -->
-<div id="resultsScreen" style="display:none;">
+<div id="resultsScreen" class="screen blue-bg" style="display:none;">
     <h1>Results</h1>
-    <div id="resultsContainer"></div>
-</div>
 
-<hr style="margin:40px 0;">
+    <div class="results-grid">
+
+        <div>
+            <h2>Current Question</h2>
+            <table class="results-table">
+                <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Response Rate</th>
+                    <th>Score</th>
+                </tr>
+                </thead>
+                <tbody id="currentResults"></tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2>Total Game</h2>
+            <table class="results-table">
+                <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Response Rate</th>
+                    <th>Score</th>
+                </tr>
+                </thead>
+                <tbody id="totalResults"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
 
 <!-- CONTROL BUTTONS -->
 <div class="button-grid">

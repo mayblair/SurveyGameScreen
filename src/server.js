@@ -46,25 +46,30 @@ let gameState = {
 
 let questions = [
     {
-        question: "Which planet is the Red Planet?",
-        answers: ["Earth", "Mars", "Jupiter", "Venus"],
-        correct: "Mars"
+        question: "How many weeks of paid maternity leave are the majority of people who give birth in America receiving?",
+        answers: ["0", "5", "12", "15"],
+        correct: "0"
     },
     {
-        question: "What is H2O?",
-        answers: ["Hydrogen", "Oxygen", "Water", "Helium"],
-        correct: "Water"
+        question: "How long after Bobbi Gibbs became the first woman to complete the Boston Marathon in 1966, did it become legal for women to register in major marathons?",
+        answers: ["7 months", "2 years", "6 years", "15 years"],
+        correct: "6 years"
     },
     {
-        question: "What is What?",
-        answers: ["what", "What", "whaa", "watt"],
-        correct: "What"
-    },
-    {
-        question: "Who is Ms. Blair?",
-        answers: ["Student", "Teacher", "Water", "Helium"],
-        correct: "Teacher"
+        question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
+        answers: ["Dishwasher", "Electric Refrigerator", "Coffee Filter", "Toaster"],
+        correct: "Dishwasher"
     }
+    {
+        question: "What percentage of the people in Milton CS classes were non-male identifying in 2024?",
+        answers: ["53%", "41%", "60%", "33%"],
+        correct: "41%"
+    },
+    {
+        question: "What percentage of the people in Milton CS classes were non-male identifying in 2025?",
+        answers: ["53%", "41%", "60%", "33%"],
+        correct: "33%"
+    },
 ];
 
 // ----------------------------

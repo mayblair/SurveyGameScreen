@@ -143,7 +143,8 @@
 
         // RESULTS SCREEN
         if (state.currentScreen === "results") {
-
+            document.body.classList.remove("orange-bg");
+            document.body.classList.add("blue-bg");
             questionScreen.style.display = "none";
             resultsScreen.style.display = "block";
 
@@ -167,21 +168,53 @@
 
     // -------- RENDER RESULTS --------
 
-    function renderResults(state) {
+   function renderResults(state) {
 
-        const container = document.getElementById("resultsContainer");
-        container.innerHTML = "";
+    const currentBody = document.getElementById("currentResults");
+    const totalBody = document.getElementById("totalResults");
 
-        for (let group in state.groupScores) {
+    currentBody.innerHTML = "";
+    totalBody.innerHTML = "";
 
-            container.innerHTML += `
-                <div style="margin:10px; font-size:20px;">
-                    <strong>${group}</strong> —
-                    Score: ${state.groupScores[group]}
-                </div>
-            `;
-        }
+    for (let group in state.groupScores) {
+
+        const classSize = totalStudents[group] || 1;
+
+        // Current round
+        const currentResponseRate = Math.round(
+            (state.groupResponses[group] / classSize) * 100
+        );
+
+        const currentScore = state.groupScores[group];
+
+        // Total game
+        const totalResponseRate = state.questionsPlayed > 0
+            ? Math.round(
+                (state.totalResponses[group] / (classSize * state.questionsPlayed)) * 100
+              )
+            : 0;
+
+        const totalAverageScore = state.questionsPlayed > 0
+            ? Math.round(state.totalScores[group] / state.questionsPlayed)
+            : 0;
+
+        currentBody.innerHTML += `
+            <tr>
+                <td>${group}</td>
+                <td>${currentResponseRate}%</td>
+                <td>${currentScore}</td>
+            </tr>
+        `;
+
+        totalBody.innerHTML += `
+            <tr>
+                <td>${group}</td>
+                <td>${totalResponseRate}%</td>
+                <td>${totalAverageScore}</td>
+            </tr>
+        `;
     }
+}
 
 </script>
 

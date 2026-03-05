@@ -100,9 +100,14 @@ io.on("connection", (socket) => {
         // do not generate new question if not on results screen
        if (gameState.currentScreen !== "join" && gameState.currentScreen !== "results")
         {   return;   }
+
         gameState.currentQuestion = getRandomQuestion();
         gameState.currentScreen = "question";
         gameState.timer = 20;
+
+        if (gameState.currentScreen === "answer") {
+            supplementaryEl.innerText = state.currentQuestion.explanation || "";
+        }
 
         // reset responses each round
         for (let group in gameState.groupResponses) {
@@ -154,6 +159,14 @@ io.on("connection", (socket) => {
         if (answer === gameState.currentQuestion.correct) {
             gameState.groupScores[group] += gameState.timer;
         }
+    });
+
+    socket.on("showAnswer", () => {
+
+        if (gameState.currentScreen !== "question") return;
+
+        gameState.currentScreen = "answer";
+        io.emit("updateState", gameState);
     });
 
 });

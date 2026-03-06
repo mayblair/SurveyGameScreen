@@ -70,16 +70,17 @@ let questions = [
         explanation: ""
     },
     {
-        question: "Women earned an average of ____ of what men earned in 2024?",
-        answers: ["53%", "85%", "60%", "33%"],
-        correct: "85%"
-        explanation: ""
-    },
         question: "What percentage of the people in Milton CS classes were non-male identifying in 2025?",
         answers: ["53%", "41%", "60%", "33%"],
         correct: "33%",
         explanation: ""
-    }
+    },
+    {
+        question: "Women earned an average of ____ of what men earned in 2024?",
+        answers: ["53%", "85%", "60%", "33%"],
+        correct: "85%",
+        explanation: ""
+    },
 ];
 
 // ----------------------------

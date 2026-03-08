@@ -123,6 +123,23 @@ button {
     padding: 40px 120px;   /* left & right padding */
 }
 
+#questionCounter {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    padding: 8px 14px;
+    border-radius: 8px;
+
+    background-color: rgba(0, 17, 70, 0.85); /* navy */
+    color: white;
+
+    z-index: 1000;
+}
+
 /* Table styling */
 .results-table {
     width: 100%;

@@ -116,48 +116,53 @@ function renderQuestion(state) {
 
     timerEl.innerText = state.timer;
 
-    questionEl.innerText = state.currentQuestion.question;
-    answersEl.innerHTML = "";
-    supplementaryEl.style.display = "none";
+    // If new question
+    if (state.currentQuestion.id !== currentQuestionId) {
 
-    hasAnswered = false;
-    currentQuestionId = state.currentQuestion.id;
+        currentQuestionId = state.currentQuestion.id;
+        hasAnswered = false;
 
-    state.currentQuestion.answers.forEach(ans => {
+        questionEl.innerText = state.currentQuestion.question;
+        answersEl.innerHTML = "";
+        supplementaryEl.style.display = "none";
 
-        const btn = document.createElement("button");
-        btn.innerText = ans;
-        btn.className = "answer-btn";
+        state.currentQuestion.answers.forEach(ans => {
 
-        btn.onclick = () => {
+            const btn = document.createElement("button");
+            btn.innerText = ans;
+            btn.className = "answer-btn";
 
-            if (hasAnswered) return;
-            if (state.timer <= 0) return;
+            btn.onclick = () => {
 
-            hasAnswered = true;
+                if (hasAnswered) return;
+                if (state.timer <= 0) return;
 
-            const group = localStorage.getItem("group");
+                hasAnswered = true;
 
-            socket.emit("submitAnswer", {
-                group,
-                answer: ans,
-                questionId: state.currentQuestion.id
-            });
+                const group = localStorage.getItem("group");
 
-            if (ans === state.currentQuestion.correct) {
-                btn.style.backgroundColor = "#2ecc71";
+                socket.emit("submitAnswer", {
+                    group,
+                    answer: ans,
+                    questionId: state.currentQuestion.id
+                });
+
+                if (ans === state.currentQuestion.correct) {
+                    btn.style.backgroundColor = "#2ecc71";
+                } else {
+                    btn.style.backgroundColor = "#e74c3c";
+                }
+
                 btn.style.color = "white";
-            } else {
-                btn.style.backgroundColor = "#e74c3c";
-                btn.style.color = "white";
-            }
 
-            document.querySelectorAll(".answer-btn")
-                .forEach(b => b.disabled = true);
-        };
+                // Disable ALL buttons
+                document.querySelectorAll(".answer-btn")
+                    .forEach(b => b.disabled = true);
+            };
 
-        answersEl.appendChild(btn);
-    });
+            answersEl.appendChild(btn);
+        });
+    }
 }
 
 // ---------------- ANSWER REVEAL ----------------

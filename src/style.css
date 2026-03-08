@@ -20,6 +20,19 @@ body {
     padding: 40px;
 }
 
+.controller-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.controller-buttons button {
+    padding: 12px 25px;
+    font-size: 18px;
+    border-radius: 10px;
+}
+
 button {
     padding: 20px;
     font-size: 20px;

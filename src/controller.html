@@ -18,8 +18,8 @@
 
     <div id="answers" class="button-grid"></div>
 
-    <div class="progress-container">
-        <div id="responseBar" class="progress-bar"></div>
+    <div id="verticalProgressContainer">
+        <div id="verticalProgressBar"></div>
     </div>
 
     <div id="responsePercent" style="margin-top:8px; font-size:18px;"></div>
@@ -96,12 +96,12 @@
             }
 
             const percent = totalStudentsAll > 0
-                ? Math.ceil((totalResponsesAll / totalStudentsAll) * 100)
+                ? Math.round((totalResponsesAll / totalStudentsAll) * 100)
                 : 0;
 
-            document.getElementById("responseBar").style.width = percent + "%";
-            document.getElementById("responsePercent").innerText =
-                "Response Rate: " + percent + "%";
+            // Update vertical bar height
+            document.getElementById("verticalProgressBar").style.height = percent + "%";
+            document.getElementById("verticalProgressContainer").style.display = "block";
 
             if (state.currentQuestion.id !== currentQuestionId) {
 
@@ -141,6 +141,7 @@
 
         // RESULTS SCREEN
         if (state.currentScreen === "results") {
+            document.getElementById("verticalProgressContainer").style.display = "none";
 
             document.body.classList.remove("orange-bg");
             document.body.classList.add("blue-bg");
@@ -149,6 +150,14 @@
             resultsScreen.style.display = "block";
 
             renderResults(state);
+
+        }
+
+        if (state.currentScreen === "join") {
+            if (!hasJoined) {
+                showScreen("join");
+            }
+            return;
         }
     });
 

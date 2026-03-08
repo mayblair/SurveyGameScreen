@@ -35,9 +35,9 @@ document.querySelectorAll(".group-btn").forEach(btn => {
 
         btn.classList.add("selected");
 
-        setTimeout(() => {
-            showScreen("waiting");
-        }, 400);
+        socket.emit("joinClass", { group });
+
+        showScreen("waiting");
     });
 });
 
@@ -60,6 +60,8 @@ socket.on("updateState", (state) => {
 
     // ANSWER STATE
     if (state.currentScreen === "answer" && state.currentQuestion) {
+        showScreen("question");
+        renderQuestion(state);
         showAnswer(state);
         return;
     }

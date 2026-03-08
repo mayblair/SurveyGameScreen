@@ -128,6 +128,9 @@ function getRandomQuestion() {
 
 io.on("connection", (socket) => {
 
+    socket.on("joinClass", ({ group }) => {
+        socket.emit("updateState", gameState);
+    });
 
     socket.on("startQuestion", () => {
         // do not generate new question if not on results screen

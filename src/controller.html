@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Controller</title>
+    <title>Women's History Month Milton Trivia</title>
     <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -17,6 +17,12 @@
     <h1 id="question"></h1>
 
     <div id="answers" class="button-grid"></div>
+
+    <div class="progress-container">
+        <div id="responseBar" class="progress-bar"></div>
+    </div>
+
+    <div id="responsePercent" style="margin-top:8px; font-size:18px;"></div>
 
     <div id="supplementaryText" class="supplementary-box"></div>
 
@@ -80,6 +86,23 @@
             timerEl.innerText = state.timer;
             questionEl.innerText = state.currentQuestion.question;
 
+            // Live response rate calculation
+            let totalStudentsAll = 0;
+            let totalResponsesAll = 0;
+
+            for (let group in state.groupResponses) {
+                totalStudentsAll += totalStudents[group] || 0;
+                totalResponsesAll += state.groupResponses[group];
+            }
+
+            const percent = totalStudentsAll > 0
+                ? Math.round((totalResponsesAll / totalStudentsAll) * 100)
+                : 0;
+
+            document.getElementById("responseBar").style.width = percent + "%";
+            document.getElementById("responsePercent").innerText =
+                "Response Rate: " + percent + "%";
+
             if (state.currentQuestion.id !== currentQuestionId) {
 
                 currentQuestionId = state.currentQuestion.id;
@@ -108,7 +131,12 @@
                 }
             });
 
-            supplementaryEl.innerText = state.currentQuestion.explanation || "";
+            if (state.currentQuestion.explanation) {
+                supplementaryEl.style.display = "block";
+                supplementaryEl.innerText = state.currentQuestion.explanation;
+            } else {
+                supplementaryEl.style.display = "none";
+            }
         }
 
         // RESULTS SCREEN
@@ -141,6 +169,8 @@
         const totalBody = document.getElementById("totalResults");
         totalBody.innerHTML = "";
 
+        let rows = [];
+
         for (let group in state.totalScores) {
 
             const classSize = totalStudents[group] || 1;
@@ -155,14 +185,24 @@
                 ? Math.round(state.totalScores[group] / state.questionsPlayed)
                 : 0;
 
+            rows.push({
+                group,
+                responseRate: totalResponseRate,
+                score: totalAverageScore
+            });
+        }
+
+        rows.sort((a, b) => b.score - a.score);
+
+        rows.forEach(r => {
             totalBody.innerHTML += `
                 <tr>
-                    <td>${group}</td>
-                    <td>${totalResponseRate}%</td>
-                    <td>${totalAverageScore}</td>
+                    <td>${r.group}</td>
+                    <td>${r.responseRate}%</td>
+                    <td>${r.score}</td>
                 </tr>
             `;
-        }
+        });
     }
 
 </script>

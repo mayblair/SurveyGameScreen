@@ -117,10 +117,12 @@ button {
 
 #resultsScreen {
     padding-right: 120px;   /* left & right padding */
+    padding-left: 120px;   /* left & right padding */
 }
 
 #questionScreen {
     padding-right: 120px;   /* left & right padding */
+    padding-left: 120px;   /* left & right padding */
 }
 
 #questionCounter {

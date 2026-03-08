@@ -180,6 +180,8 @@ io.on("connection", (socket) => {
 
     
     socket.on("submitAnswer", ({ group, answer }) => {
+        if (gameState.timer <= 0) return;
+
         if (!gameState.groupResponses[group]) {
             gameState.groupResponses[group] = 0;
         }

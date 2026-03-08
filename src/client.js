@@ -17,6 +17,7 @@ const resultsContainer = document.getElementById("simpleResults");
 
 let hasAnswered = false;
 let currentQuestionId = null;
+let hasJoined = false;
 
 const totalStudents = {
     "Class 1": 187,
@@ -32,8 +33,9 @@ document.querySelectorAll(".group-btn").forEach(btn => {
 
         const group = btn.innerText;
         localStorage.setItem("group", group);
-
         btn.classList.add("selected");
+
+        hasJoined = true;
 
         socket.emit("joinClass", { group });
 

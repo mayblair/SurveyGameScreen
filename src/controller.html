@@ -50,6 +50,7 @@
     <button onclick="startQuestion()">Next Question</button>
     <button onclick="showAnswer()">Show Answer</button>
     <button onclick="showResults()">Show Results</button>
+    <button onclick="resetGame()">Reset Game</button>
 </div>
 
 <script>
@@ -171,6 +172,10 @@
 
     function showResults() {
         socket.emit("showResults");
+    }
+
+    function resetGame() {
+        socket.emit("resetGame");
     }
 
     function renderResults(state) {

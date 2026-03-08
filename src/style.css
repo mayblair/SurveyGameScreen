@@ -115,9 +115,12 @@ button {
     padding: 30px;
 }
 
-/* Results screen padding */
 #resultsScreen {
-    padding: 40px 80px;   /* left & right padding */
+    padding: 40px 120px;   /* left & right padding */
+}
+
+#questionScreen {
+    padding: 40px 120px;   /* left & right padding */
 }
 
 /* Table styling */

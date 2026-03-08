@@ -116,11 +116,11 @@ button {
 }
 
 #resultsScreen {
-    padding: 40px 120px;   /* left & right padding */
+    padding-right: 120px;   /* left & right padding */
 }
 
 #questionScreen {
-    padding: 40px 120px;   /* left & right padding */
+    padding-right: 120px;   /* left & right padding */
 }
 
 #questionCounter {

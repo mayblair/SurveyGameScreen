@@ -190,14 +190,12 @@
                   )
                 : 0;
 
-            const totalAverageScore = state.questionsPlayed > 0
-                ? Math.round(state.totalScores[group] / state.questionsPlayed)
-                : 0;
+            const totalScore = state.totalScores[group];
 
             rows.push({
                 group,
                 responseRate: totalResponseRate,
-                score: totalAverageScore
+                score: totalScore
             });
         }
 

@@ -7,6 +7,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 let countdownInterval = null;
+let question_index = 0;
 
 
 // ----------------------------
@@ -46,10 +47,10 @@ let gameState = {
 
 let questions = [
     {
-        question: "How many weeks of paid maternity leave are the majority of people who give birth in America receiving?",
-        answers: ["0", "5", "12", "15"],
-        correct: "0",
-        explanation: "Only 12-41% of birthing people, differing between the private and public sector, have any access to paid maternity leave. Even so, only 54% are eligible for the Family and Medical Leave Act, which guarantees 12 weeks of UNPAID job protection."
+        question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
+        answers: ["Dishwasher", "Electric Refrigerator", "Coffee Filter", "Toaster"],
+        correct: "Dishwasher",
+        explanation: "While Cochrane invented the dishwasher, all other appliances mentioned were invented by other women."
     },
     {
         question: "How long after Bobbi Gibbs became the first woman to complete the Boston Marathon in 1966, did it become legal for women to register in major marathons?",
@@ -58,10 +59,22 @@ let questions = [
         explanation: "Women like Bobbi Gibbs and Kathrine Switzer, pictured running in the 1967 Boston marathon despite physical attempts to remove her, challenged the narrative that women were “too fragile for long distance running”"
     },
     {
-        question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
-        answers: ["Dishwasher", "Electric Refrigerator", "Coffee Filter", "Toaster"],
-        correct: "Dishwasher",
-        explanation: "While Cochrane invented the dishwasher, all other appliances mentioned were invented by other women."
+        question: "Which of these famous actresses are Milton Academy alumni?",
+        answers: ["Jenny Slate", "Zoe Saldana", "Kate Siegel", "Octavia Spencer"],
+        correct: "Jenny Slate",
+        explanation: "After graduating Class of ’00, Slate went on to co-create an Oscar-nominated short film and join the 35th season of SNL as a cast member. She has since been featured in many films, including her role as Allysa in “It Ends With Us.”"
+    },
+    {
+        question: "How many weeks of paid maternity leave are the majority of people who give birth in America receiving?",
+        answers: ["0", "5", "12", "15"],
+        correct: "0",
+        explanation: "Only 12-41% of birthing people, differing between the private and public sector, have any access to paid maternity leave. Even so, only 54% are eligible for the Family and Medical Leave Act, which guarantees 12 weeks of UNPAID job protection."
+    },
+    {
+        question: "Women earned an average of ____ of what men earned in 2024?",
+        answers: ["53%", "85%", "60%", "33%"],
+        correct: "85%",
+        explanation: ""
     },
     {
         question: "What percentage of the people in Milton CS classes were non-male identifying in 2024?",
@@ -76,10 +89,16 @@ let questions = [
         explanation: ""
     },
     {
-        question: "Women earned an average of ____ of what men earned in 2024?",
-        answers: ["53%", "85%", "60%", "33%"],
-        correct: "85%",
+        question: "Which of Milton’s sports teams were ISL champions the last 3 years?",
+        answers: ["Girls Varsity Squash", "Boys Varsity Squash", "Girls Varsity Swim", "Boys Varsity Swim"],
+        correct: "Girls Varsity Swim",
         explanation: ""
+    },
+    {
+        question: "How many female Milton students are committed to play their sport at a collegiate level?",
+        answers: ["20", "12", "14", "18"],
+        correct: "18",
+        explanation: "Congrats to the 12 seniors, 6 juniors, and many more to come!!\n(C. DiAdamo, S. Crowly, K. Xue, L. Rubeiz, E. Trefethen, C. Khan, M. Quatrale, A. Scannell, C. Banbury, R. Vaughan, T. Schoettle, L. Bourell S. Callahan, B. Hunt, S. Salmon, L. Garrity, E. O’Rourke, M. Ruland)"
     },
 ];
 
@@ -88,7 +107,9 @@ let questions = [
 // ----------------------------
 
 function getRandomQuestion() {
-    const q = questions[Math.floor(Math.random() * questions.length)];
+//    const q = questions[Math.floor(Math.random() * questions.length)];
+    const q = questions[question_index];
+    question_index += 1;
 
     let shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
 

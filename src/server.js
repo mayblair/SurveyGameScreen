@@ -7,7 +7,6 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 let countdownInterval = null;
-let question_index = 0;
 
 
 // ----------------------------
@@ -18,6 +17,7 @@ let gameState = {
     currentScreen: "join", // join | question | results
     timer: 20,
     currentQuestion: null,
+    question_index = 0;
     groupScores: {
         "Class 1": 0,
         "Class 2": 0,
@@ -120,8 +120,8 @@ let questions = [
 
 function getRandomQuestion() {
 //    const q = questions[Math.floor(Math.random() * questions.length)];
-    const q = questions[question_index];
-    question_index += 1;
+    const q = questions[gameState.question_index];
+    gameState.question_index += 1;
 
     let shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
 
@@ -219,20 +219,12 @@ io.on("connection", (socket) => {
 
     socket.on("showAnswer", () => {
 
-        if (gameState.currentScreen !== "question") return;
+        if (gameState.currentScreen === "results") return;
 
-        // STOP THE TIMER
+        // Stop timer if running
         if (countdownInterval) {
             clearInterval(countdownInterval);
             countdownInterval = null;
-        }
-
-        // Show explanation only if exists
-        if (state.currentQuestion.explanation) {
-            supplementaryEl.style.display = "block";
-            supplementaryEl.innerText = state.currentQuestion.explanation;
-        } else {
-            supplementaryEl.style.display = "none";
         }
 
         gameState.currentScreen = "answer";
@@ -258,6 +250,11 @@ io.on("connection", (socket) => {
 
         gameState.questionsPlayed = 0;
         gameState.currentScreen = "join";
+        gameState.question_index = 0;
+        gameState.timer: 20,
+        gameState.currentQuestion: null,
+        clearInterval(countdownInterval);
+        countdownInterval = null;
 
         io.emit("updateState", gameState);
     });

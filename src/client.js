@@ -49,7 +49,9 @@ socket.on("updateState", (state) => {
 
     // JOIN STATE
     if (state.currentScreen === "join") {
-        showScreen("join");
+        if (!hasJoined) {
+            showScreen("join");
+        }
         return;
     }
 
@@ -114,55 +116,48 @@ function renderQuestion(state) {
 
     timerEl.innerText = state.timer;
 
-    // If new question OR no buttons exist yet
-    if (
-        state.currentQuestion.id !== currentQuestionId ||
-        answersEl.children.length === 0
-    ) {
+    questionEl.innerText = state.currentQuestion.question;
+    answersEl.innerHTML = "";
+    supplementaryEl.style.display = "none";
 
-        currentQuestionId = state.currentQuestion.id;
-        hasAnswered = false;
+    hasAnswered = false;
+    currentQuestionId = state.currentQuestion.id;
 
-        questionEl.innerText = state.currentQuestion.question;
-        answersEl.innerHTML = "";
-        supplementaryEl.style.display = "none";
+    state.currentQuestion.answers.forEach(ans => {
 
-        state.currentQuestion.answers.forEach(ans => {
+        const btn = document.createElement("button");
+        btn.innerText = ans;
+        btn.className = "answer-btn";
 
-            const btn = document.createElement("button");
-            btn.innerText = ans;
-            btn.className = "answer-btn";
+        btn.onclick = () => {
 
-            btn.onclick = () => {
+            if (hasAnswered) return;
+            if (state.timer <= 0) return;
 
-                if (hasAnswered) return;
-                if (state.timer <= 0) return;
+            hasAnswered = true;
 
-                hasAnswered = true;
+            const group = localStorage.getItem("group");
 
-                const group = localStorage.getItem("group");
+            socket.emit("submitAnswer", {
+                group,
+                answer: ans,
+                questionId: state.currentQuestion.id
+            });
 
-                socket.emit("submitAnswer", {
-                    group,
-                    answer: ans,
-                    questionId: state.currentQuestion.id
-                });
+            if (ans === state.currentQuestion.correct) {
+                btn.style.backgroundColor = "#2ecc71";
+                btn.style.color = "white";
+            } else {
+                btn.style.backgroundColor = "#e74c3c";
+                btn.style.color = "white";
+            }
 
-                if (ans === state.currentQuestion.correct) {
-                    btn.style.backgroundColor = "#2ecc71";
-                    btn.style.color = "white";
-                } else {
-                    btn.style.backgroundColor = "#e74c3c";
-                    btn.style.color = "white";
-                }
+            document.querySelectorAll(".answer-btn")
+                .forEach(b => b.disabled = true);
+        };
 
-                document.querySelectorAll(".answer-btn")
-                    .forEach(b => b.disabled = true);
-            };
-
-            answersEl.appendChild(btn);
-        });
-    }
+        answersEl.appendChild(btn);
+    });
 }
 
 // ---------------- ANSWER REVEAL ----------------

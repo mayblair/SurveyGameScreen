@@ -72,7 +72,7 @@ let questions = [
     },
     {
         question: "Women earned an average of ____ of what men earned in 2024?",
-        answers: ["53%", "85%", "60%", "33%"],
+        answers: ["53%", "85%", "60%", "93%"],
         correct: "85%",
         explanation: "While equal pay laws have been in effect for more than 60 years, it is estimated the gender pay gap will not close until 2058."
     },
@@ -93,6 +93,12 @@ let questions = [
         answers: ["53%", "41%", "60%", "33%"],
         correct: "33%",
         explanation: ""
+    },
+    {
+        question: "After being the No. 1 pick in the 2024 WNBA Draft, Caitlin Clark agreed to a 4 year contract with the Indiana Fever. How much does she make yearly from this?",
+        answers: ["2.5 million", "50,514", "84,514", "1.5 million"],
+        correct: "84,514",
+        explanation: "As of last year she made an estimated an extra 16 million from outside endorsements. Zaccharie Risacher, the No. 1 pick in the 2024 NBA Draft signed a similar contract that earns him 14.2 million annually."
     },
     {
         question: "Which of Milton’s sports teams were ISL champions the last 3 years?",
@@ -177,6 +183,7 @@ io.on("connection", (socket) => {
         if (gameState.currentScreen !== "answer") return;
         //add to total participation rate and score info
         for (let group in gameState.groupScores) {
+            if (!gameState.groupScores.hasOwnProperty(group)) continue;
             gameState.totalScores[group] += gameState.groupScores[group];
             gameState.groupScores[group] = 0;
             gameState.totalResponses[group] += gameState.groupResponses[group];
@@ -192,6 +199,11 @@ io.on("connection", (socket) => {
 
     
     socket.on("submitAnswer", ({ group, answer }) => {
+
+        if (!group || !gameState.groupScores.hasOwnProperty(group)) {
+            return;
+        }
+
         if (gameState.timer <= 0) return;
 
         if (!gameState.groupResponses[group]) {
@@ -213,6 +225,14 @@ io.on("connection", (socket) => {
         if (countdownInterval) {
             clearInterval(countdownInterval);
             countdownInterval = null;
+        }
+
+        // Show explanation only if exists
+        if (state.currentQuestion.explanation) {
+            supplementaryEl.style.display = "block";
+            supplementaryEl.innerText = state.currentQuestion.explanation;
+        } else {
+            supplementaryEl.style.display = "none";
         }
 
         gameState.currentScreen = "answer";

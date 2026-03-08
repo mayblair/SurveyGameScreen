@@ -8,44 +8,6 @@ const io = new Server(server);
 
 let countdownInterval = null;
 
-
-// ----------------------------
-// Game State
-// ----------------------------
-
-let gameState = {
-    currentScreen: "join", // join | question | results
-    timer: 20,
-    currentQuestion: null,
-    question_index: 0,
-    totalQuestions: questions.length,
-    groupScores: {
-        "Class 1": 0,
-        "Class 2": 0,
-        "Class 3": 0,
-        "Class 4": 0
-    },
-    groupResponses: {
-        "Class 1": 0,
-        "Class 2": 0,
-        "Class 3": 0,
-        "Class 4": 0
-    },
-    totalScores: {
-        "Class 1": 0,
-        "Class 2": 0,
-        "Class 3": 0,
-        "Class 4": 0
-    },
-    totalResponses: {
-        "Class 1": 0,
-        "Class 2": 0,
-        "Class 3": 0,
-        "Class 4": 0
-    },
-    questionsPlayed: 0
-};
-
 let questions = [
     {
         question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
@@ -114,6 +76,44 @@ let questions = [
         explanation: "Congrats to the 12 seniors, 6 juniors, and many more to come!!\n(C. DiAdamo, S. Crowly, K. Xue, L. Rubeiz, E. Trefethen, C. Khan, M. Quatrale, A. Scannell, C. Banbury, R. Vaughan, T. Schoettle, L. Bourell S. Callahan, B. Hunt, S. Salmon, L. Garrity, E. O’Rourke, M. Ruland)"
     },
 ];
+
+
+// ----------------------------
+// Game State
+// ----------------------------
+
+let gameState = {
+    currentScreen: "join", // join | question | results
+    timer: 20,
+    currentQuestion: null,
+    question_index: 0,
+    totalQuestions: questions.length,
+    groupScores: {
+        "Class 1": 0,
+        "Class 2": 0,
+        "Class 3": 0,
+        "Class 4": 0
+    },
+    groupResponses: {
+        "Class 1": 0,
+        "Class 2": 0,
+        "Class 3": 0,
+        "Class 4": 0
+    },
+    totalScores: {
+        "Class 1": 0,
+        "Class 2": 0,
+        "Class 3": 0,
+        "Class 4": 0
+    },
+    totalResponses: {
+        "Class 1": 0,
+        "Class 2": 0,
+        "Class 3": 0,
+        "Class 4": 0
+    },
+    questionsPlayed: 0
+};
 
 // ----------------------------
 // Randomize Question + Answers

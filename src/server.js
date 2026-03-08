@@ -121,7 +121,7 @@ let gameState = {
 
 function getRandomQuestion() {
 //    const q = questions[Math.floor(Math.random() * questions.length)];
-    if (question_index >= questions.length) {
+    if (gameState.question_index >= questions.length) {
         return null;
     }
     const q = questions[gameState.question_index];
@@ -148,7 +148,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("startQuestion", () => {
-        if (question_index >= questions.length) {
+        if (gameState.question_index >= questions.length) {
             gameState.currentScreen = "results";
             io.emit("updateState", gameState);
             return;

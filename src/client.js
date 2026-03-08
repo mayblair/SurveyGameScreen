@@ -147,13 +147,9 @@ function renderQuestion(state) {
                     questionId: state.currentQuestion.id
                 });
 
-                if (ans === state.currentQuestion.correct) {
-                    btn.style.backgroundColor = "#2ecc71";
-                } else {
-                    btn.style.backgroundColor = "#e74c3c";
-                }
-
-                btn.style.color = "white";
+                btn.style.backgroundColor = "#cccccc";  // neutral gray
+                btn.style.color = "#001146";
+                btn.style.border = "2px solid #001146";
 
                 // Disable ALL buttons
                 document.querySelectorAll(".answer-btn")

@@ -174,6 +174,7 @@ io.on("connection", (socket) => {
 
 
     socket.on("showResults", () => {
+        if (gameState.currentScreen !== "answer") return;
         //add to total participation rate and score info
         for (let group in gameState.groupScores) {
             gameState.totalScores[group] += gameState.groupScores[group];
@@ -215,6 +216,28 @@ io.on("connection", (socket) => {
         }
 
         gameState.currentScreen = "answer";
+
+        io.emit("updateState", gameState);
+    });
+
+    socket.on("resetGame", () => {
+
+        gameState.totalScores = {
+            "Class 1": 0,
+            "Class 2": 0,
+            "Class 3": 0,
+            "Class 4": 0
+        };
+
+        gameState.totalResponses = {
+            "Class 1": 0,
+            "Class 2": 0,
+            "Class 3": 0,
+            "Class 4": 0
+        };
+
+        gameState.questionsPlayed = 0;
+        gameState.currentScreen = "join";
 
         io.emit("updateState", gameState);
     });

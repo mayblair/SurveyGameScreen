@@ -200,11 +200,15 @@ io.on("connection", (socket) => {
     
     socket.on("submitAnswer", ({ group, answer }) => {
 
-        if (!group || !gameState.groupScores.hasOwnProperty(group)) {
-            return;
-        }
-
-        if (gameState.timer <= 0) return;
+       if (!gameState.currentQuestion) return;
+       if (questionId !== gameState.currentQuestion.id) return;
+       if (gameState.currentScreen !== "question") return;
+       if (gameState.timer <= 0) return;
+       if (!group || !gameState.groupScores.hasOwnProperty(group)) return;
+       if (!answer ||
+           !gameState.currentQuestion.answers.includes(answer)) {
+           return;
+       }
 
         if (!gameState.groupResponses[group]) {
             gameState.groupResponses[group] = 0;

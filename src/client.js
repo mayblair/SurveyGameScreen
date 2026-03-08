@@ -47,11 +47,8 @@ document.querySelectorAll(".group-btn").forEach(btn => {
 
 socket.on("updateState", (state) => {
 
-    // JOIN
-    if (state.currentScreen === "join") {
-        if (!hasJoined) {
-            showScreen("join");
-        }
+    if (!hasJoined) {
+        showScreen("join");
         return;
     }
 

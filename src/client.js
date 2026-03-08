@@ -47,7 +47,7 @@ document.querySelectorAll(".group-btn").forEach(btn => {
 
 socket.on("updateState", (state) => {
 
-    // JOIN STATE
+    // JOIN
     if (state.currentScreen === "join") {
         if (!hasJoined) {
             showScreen("join");
@@ -55,22 +55,22 @@ socket.on("updateState", (state) => {
         return;
     }
 
-    // QUESTION STATE
+    // QUESTION
     if (state.currentScreen === "question" && state.currentQuestion) {
         showScreen("question");
         renderQuestion(state);
         return;
     }
 
-    // ANSWER STATE
+    // ANSWER
     if (state.currentScreen === "answer" && state.currentQuestion) {
         showScreen("question");
         renderQuestion(state);
-        showAnswer(state);
+        revealAnswer(state);
         return;
     }
 
-    // RESULTS STATE
+    // RESULTS
     if (state.currentScreen === "results") {
         showScreen("results");
         renderResults(state);
@@ -167,9 +167,9 @@ function renderQuestion(state) {
 
 // ---------------- ANSWER REVEAL ----------------
 
-function showAnswer(state) {
+function revealAnswer(state) {
 
-    // Lock further answering
+    // Disable answering
     document.querySelectorAll(".answer-btn")
         .forEach(b => b.disabled = true);
 

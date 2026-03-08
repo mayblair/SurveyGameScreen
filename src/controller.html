@@ -125,6 +125,7 @@
         // ANSWER SCREEN
         if (state.currentScreen === "answer" && state.currentQuestion) {
 
+            // Highlight correct answer
             document.querySelectorAll(".answer-btn").forEach(btn => {
                 if (btn.innerText === state.currentQuestion.correct) {
                     btn.style.backgroundColor = "#2ecc71";
@@ -132,11 +133,13 @@
                 }
             });
 
-            if (state.currentQuestion.explanation) {
+            // Show explanation ONLY if it exists
+            if (state.currentQuestion.explanation && state.currentQuestion.explanation.trim() !== "") {
                 supplementaryEl.style.display = "block";
                 supplementaryEl.innerText = state.currentQuestion.explanation;
             } else {
                 supplementaryEl.style.display = "none";
+                supplementaryEl.innerText = "";
             }
         }
 

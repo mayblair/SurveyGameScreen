@@ -18,6 +18,7 @@ let gameState = {
     timer: 20,
     currentQuestion: null,
     question_index: 0,
+    totalQuestions: questions.length,
     groupScores: {
         "Class 1": 0,
         "Class 2": 0,
@@ -120,8 +121,10 @@ let questions = [
 
 function getRandomQuestion() {
 //    const q = questions[Math.floor(Math.random() * questions.length)];
+    if (question_index >= questions.length) {
+        return null;
+    }
     const q = questions[gameState.question_index];
-    gameState.question_index += 1;
 
     let shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
 
@@ -145,6 +148,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on("startQuestion", () => {
+        if (question_index >= questions.length) {
+            gameState.currentScreen = "results";
+            io.emit("updateState", gameState);
+            return;
+        }
         // do not generate new question if not on results screen
        if (gameState.currentScreen !== "join" && gameState.currentScreen !== "results")
         {   return;   }
@@ -152,7 +160,7 @@ io.on("connection", (socket) => {
         gameState.currentQuestion = getRandomQuestion();
         gameState.currentScreen = "question";
         gameState.timer = 20;
-
+        gameState.question_index++;
 
         // reset responses each round
         for (let group in gameState.groupResponses) {

@@ -74,7 +74,13 @@ let questions = [
         question: "Women earned an average of ____ of what men earned in 2024?",
         answers: ["53%", "85%", "60%", "33%"],
         correct: "85%",
-        explanation: ""
+        explanation: "While equal pay laws have been in effect for more than 60 years, it is estimated the gender pay gap will not close until 2058."
+    },
+    {
+        question: "Despite making up more than 60% of college graduates in 2025, women are the most under represented in which major?",
+        answers: ["Engineering", "Computer Science", "Physics", "Mathematics"],
+        correct: "Computer Science",
+        explanation: "While women only make up 21% of computer science bachelor's degrees, the numbers for Engineering and Physics graduates also remain under 25%."
     },
     {
         question: "What percentage of the people in Milton CS classes were non-male identifying in 2024?",
@@ -171,7 +177,9 @@ io.on("connection", (socket) => {
         //add to total participation rate and score info
         for (let group in gameState.groupScores) {
             gameState.totalScores[group] += gameState.groupScores[group];
+            gameState.groupScores[group] = 0;
             gameState.totalResponses[group] += gameState.groupResponses[group];
+            gameState.groupResponses[group] = 0;
         }
 
         gameState.questionsPlayed++;
@@ -200,7 +208,14 @@ io.on("connection", (socket) => {
 
         if (gameState.currentScreen !== "question") return;
 
+        // STOP THE TIMER
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+
         gameState.currentScreen = "answer";
+
         io.emit("updateState", gameState);
     });
 

@@ -198,7 +198,7 @@ io.on("connection", (socket) => {
 
 
     
-    socket.on("submitAnswer", ({ group, answer }) => {
+    socket.on("submitAnswer", ({ group, answer, questionId }) => {
 
        if (!gameState.currentQuestion) return;
        if (questionId !== gameState.currentQuestion.id) return;

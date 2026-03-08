@@ -17,7 +17,7 @@ let gameState = {
     currentScreen: "join", // join | question | results
     timer: 20,
     currentQuestion: null,
-    question_index = 0;
+    question_index: 0,
     groupScores: {
         "Class 1": 0,
         "Class 2": 0,

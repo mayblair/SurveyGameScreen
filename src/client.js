@@ -110,8 +110,11 @@ function renderQuestion(state) {
 
     timerEl.innerText = state.timer;
 
-    // New question detected
-    if (state.currentQuestion.id !== currentQuestionId) {
+    // If new question OR no buttons exist yet
+    if (
+        state.currentQuestion.id !== currentQuestionId ||
+        answersEl.children.length === 0
+    ) {
 
         currentQuestionId = state.currentQuestion.id;
         hasAnswered = false;

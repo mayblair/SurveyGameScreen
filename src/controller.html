@@ -96,7 +96,7 @@
             }
 
             const percent = totalStudentsAll > 0
-                ? Math.round((totalResponsesAll / totalStudentsAll) * 100)
+                ? Math.ceil((totalResponsesAll / totalStudentsAll) * 100)
                 : 0;
 
             document.getElementById("responseBar").style.width = percent + "%";
@@ -176,7 +176,7 @@
             const classSize = totalStudents[group] || 1;
 
             const totalResponseRate = state.questionsPlayed > 0
-                ? Math.round(
+                ? Math.ceil(
                     (state.totalResponses[group] / (classSize * state.questionsPlayed)) * 100
                   )
                 : 0;

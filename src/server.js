@@ -251,8 +251,8 @@ io.on("connection", (socket) => {
         gameState.questionsPlayed = 0;
         gameState.currentScreen = "join";
         gameState.question_index = 0;
-        gameState.timer: 20,
-        gameState.currentQuestion: null,
+        gameState.timer = 20;
+        gameState.currentQuestion = null;
         clearInterval(countdownInterval);
         countdownInterval = null;
 

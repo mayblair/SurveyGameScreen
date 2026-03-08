@@ -1,5 +1,6 @@
 const socket = io();
 
+// ---------------- DOM ELEMENTS ----------------
 
 const joinScreen = document.getElementById("joinScreen");
 const waitingScreen = document.getElementById("waitingScreen");
@@ -9,7 +10,10 @@ const resultsScreen = document.getElementById("resultsScreen");
 const timerEl = document.getElementById("timer");
 const questionEl = document.getElementById("question");
 const answersEl = document.getElementById("answers");
-const resultsContainer = document.getElementById("resultsContainer");
+const supplementaryEl = document.getElementById("supplementaryText");
+const resultsContainer = document.getElementById("simpleResults");
+
+// ---------------- STATE ----------------
 
 let hasAnswered = false;
 let currentQuestionId = null;
@@ -21,60 +25,51 @@ const totalStudents = {
     "Class 4": 162
 };
 
-
 // ---------------- JOIN ----------------
 
 document.querySelectorAll(".group-btn").forEach(btn => {
     btn.addEventListener("click", () => {
 
-        localStorage.setItem("group", btn.innerText);
+        const group = btn.innerText;
+        localStorage.setItem("group", group);
 
         btn.classList.add("selected");
 
         setTimeout(() => {
             showScreen("waiting");
-        }, 500);
-
+        }, 400);
     });
 });
 
-// ---------------- STATE UPDATES ----------------
+// ---------------- SOCKET STATE UPDATES ----------------
 
 socket.on("updateState", (state) => {
 
+    // JOIN STATE
     if (state.currentScreen === "join") {
         showScreen("join");
+        return;
     }
 
+    // QUESTION STATE
     if (state.currentScreen === "question" && state.currentQuestion) {
         showScreen("question");
         renderQuestion(state);
+        return;
     }
 
+    // ANSWER STATE
+    if (state.currentScreen === "answer" && state.currentQuestion) {
+        showAnswer(state);
+        return;
+    }
+
+    // RESULTS STATE
     if (state.currentScreen === "results") {
         showScreen("results");
         renderResults(state);
+        return;
     }
-
-    if (state.currentScreen === "answer") {
-
-        const supplementaryEl = document.getElementById("supplementaryText");
-
-        if (state.currentQuestion.explanation) {
-            supplementaryEl.style.display = "block";
-            supplementaryEl.innerText = state.currentQuestion.explanation;
-        } else {
-            supplementaryEl.style.display = "none";
-        }
-
-        // highlight correct answer
-        document.querySelectorAll(".answer-btn").forEach(btn => {
-            if (btn.innerText === state.currentQuestion.correct) {
-                btn.style.background = "green";
-            }
-        });
-    }
-
 });
 
 // ---------------- SCREEN CONTROL ----------------
@@ -109,14 +104,13 @@ function showScreen(screen) {
     }
 }
 
-
-// ---------------- QUESTION ----------------
+// ---------------- QUESTION RENDER ----------------
 
 function renderQuestion(state) {
 
     timerEl.innerText = state.timer;
 
-    // If this is a NEW question
+    // New question detected
     if (state.currentQuestion.id !== currentQuestionId) {
 
         currentQuestionId = state.currentQuestion.id;
@@ -124,6 +118,7 @@ function renderQuestion(state) {
 
         questionEl.innerText = state.currentQuestion.question;
         answersEl.innerHTML = "";
+        supplementaryEl.style.display = "none";
 
         state.currentQuestion.answers.forEach(ans => {
 
@@ -140,12 +135,18 @@ function renderQuestion(state) {
 
                 const group = localStorage.getItem("group");
 
-                socket.emit("submitAnswer", { group, answer: ans });
+                socket.emit("submitAnswer", {
+                    group,
+                    answer: ans,
+                    questionId: state.currentQuestion.id
+                });
 
                 if (ans === state.currentQuestion.correct) {
-                    btn.style.background = "green";
+                    btn.style.backgroundColor = "#2ecc71";
+                    btn.style.color = "white";
                 } else {
-                    btn.style.background = "red";
+                    btn.style.backgroundColor = "#e74c3c";
+                    btn.style.color = "white";
                 }
 
                 document.querySelectorAll(".answer-btn")
@@ -157,14 +158,36 @@ function renderQuestion(state) {
     }
 }
 
+// ---------------- ANSWER REVEAL ----------------
 
+function showAnswer(state) {
+
+    // Lock further answering
+    document.querySelectorAll(".answer-btn")
+        .forEach(b => b.disabled = true);
+
+    // Highlight correct answer
+    document.querySelectorAll(".answer-btn").forEach(btn => {
+        if (btn.innerText === state.currentQuestion.correct) {
+            btn.style.backgroundColor = "#2ecc71";
+            btn.style.color = "white";
+        }
+    });
+
+    // Show explanation only if exists
+    if (state.currentQuestion.explanation) {
+        supplementaryEl.style.display = "block";
+        supplementaryEl.innerText = state.currentQuestion.explanation;
+    } else {
+        supplementaryEl.style.display = "none";
+    }
+}
 
 // ---------------- RESULTS ----------------
 
 function renderResults(state) {
 
-    const container = document.getElementById("simpleResults");
-    container.innerHTML = "";
+    resultsContainer.innerHTML = "";
 
     let rows = [];
 
@@ -175,10 +198,11 @@ function renderResults(state) {
         });
     }
 
+    // Sort descending
     rows.sort((a, b) => b.score - a.score);
 
     rows.forEach(r => {
-        container.innerHTML += `
+        resultsContainer.innerHTML += `
             <div style="font-size:24px; margin:15px;">
                 ${r.group}: ${r.score} points
             </div>
@@ -186,4 +210,6 @@ function renderResults(state) {
     });
 }
 
-showScreen("join"); //show join screen on startup
+// ---------------- INITIAL LOAD ----------------
+
+showScreen("join");

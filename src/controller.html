@@ -26,27 +26,21 @@
 <div id="resultsScreen" class="screen blue-bg" style="display:none;">
     <h1>Results</h1>
 
-    <div class="results-grid">
+    <table class="results-table">
+        <thead>
+        <tr>
+            <th>Class</th>
+            <th>Response Rate</th>
+            <th>Score</th>
+        </tr>
+        </thead>
+        <tbody id="totalResults"></tbody>
+    </table>
 
-        <div>
-            <h2>Total Game</h2>
-            <table class="results-table">
-                <thead>
-                <tr>
-                    <th>Class</th>
-                    <th>Response Rate</th>
-                    <th>Score</th>
-                </tr>
-                </thead>
-                <tbody id="totalResults"></tbody>
-            </table>
-        </div>
-
-    </div>
 </div>
 
 <!-- CONTROL BUTTONS -->
-<div class="button-grid">
+<div class="controller-buttons">
     <button onclick="startQuestion()">Next Question</button>
     <button onclick="showAnswer()">Show Answer</button>
     <button onclick="showResults()">Show Results</button>
@@ -72,12 +66,13 @@
 
     let currentQuestionId = null;
 
-    // -------- SOCKET STATE --------
-
     socket.on("updateState", (state) => {
 
         // QUESTION SCREEN
         if (state.currentScreen === "question" && state.currentQuestion) {
+
+            document.body.classList.remove("blue-bg");
+            document.body.classList.add("orange-bg");
 
             questionScreen.style.display = "block";
             resultsScreen.style.display = "none";
@@ -85,7 +80,6 @@
             timerEl.innerText = state.timer;
             questionEl.innerText = state.currentQuestion.question;
 
-            // Only rebuild if new question
             if (state.currentQuestion.id !== currentQuestionId) {
 
                 currentQuestionId = state.currentQuestion.id;
@@ -97,48 +91,38 @@
                     const btn = document.createElement("button");
                     btn.innerText = ans;
                     btn.className = "answer-btn";
-                    btn.style.backgroundColor = "";
-                    btn.style.color = "";
-                    btn.disabled = true; // controller does not answer
+                    btn.disabled = true;
+
                     answersEl.appendChild(btn);
                 });
             }
         }
 
-        // ANSWER SCREEN (Reveal Correct Answer)
+        // ANSWER SCREEN
         if (state.currentScreen === "answer" && state.currentQuestion) {
 
-            questionScreen.style.display = "block";
-            resultsScreen.style.display = "none";
-
-            timerEl.innerText = state.timer;
-            questionEl.innerText = state.currentQuestion.question;
-
-            // Color correct answer green
             document.querySelectorAll(".answer-btn").forEach(btn => {
                 if (btn.innerText === state.currentQuestion.correct) {
-                   btn.style.backgroundColor = "#2ecc71"; // softer green
-                    btn.style.transition = "background-color 0.3s ease";
+                    btn.style.backgroundColor = "#2ecc71";
                     btn.style.color = "white";
                 }
             });
 
-            // Show supplementary explanation
             supplementaryEl.innerText = state.currentQuestion.explanation || "";
         }
 
         // RESULTS SCREEN
         if (state.currentScreen === "results") {
+
             document.body.classList.remove("orange-bg");
             document.body.classList.add("blue-bg");
+
             questionScreen.style.display = "none";
             resultsScreen.style.display = "block";
 
             renderResults(state);
         }
     });
-
-    // -------- CONTROLS --------
 
     function startQuestion() {
         socket.emit("startQuestion");
@@ -152,55 +136,34 @@
         socket.emit("showResults");
     }
 
-    // -------- RENDER RESULTS --------
+    function renderResults(state) {
 
-   function renderResults(state) {
+        const totalBody = document.getElementById("totalResults");
+        totalBody.innerHTML = "";
 
-    const currentBody = document.getElementById("currentResults");
-    const totalBody = document.getElementById("totalResults");
+        for (let group in state.totalScores) {
 
-    currentBody.innerHTML = "";
-    totalBody.innerHTML = "";
+            const classSize = totalStudents[group] || 1;
 
-    for (let group in state.groupScores) {
+            const totalResponseRate = state.questionsPlayed > 0
+                ? Math.round(
+                    (state.totalResponses[group] / (classSize * state.questionsPlayed)) * 100
+                  )
+                : 0;
 
-        const classSize = totalStudents[group] || 1;
+            const totalAverageScore = state.questionsPlayed > 0
+                ? Math.round(state.totalScores[group] / state.questionsPlayed)
+                : 0;
 
-        // Current round
-        const currentResponseRate = Math.round(
-            (state.groupResponses[group] / classSize) * 100
-        );
-
-        const currentScore = state.groupScores[group];
-
-        // Total game
-        const totalResponseRate = state.questionsPlayed > 0
-            ? Math.round(
-                (state.totalResponses[group] / (classSize * state.questionsPlayed)) * 100
-              )
-            : 0;
-
-        const totalAverageScore = state.questionsPlayed > 0
-            ? Math.round(state.totalScores[group] / state.questionsPlayed)
-            : 0;
-
-        currentBody.innerHTML += `
-            <tr>
-                <td>${group}</td>
-                <td>${currentResponseRate}%</td>
-                <td>${currentScore}</td>
-            </tr>
-        `;
-
-        totalBody.innerHTML += `
-            <tr>
-                <td>${group}</td>
-                <td>${totalResponseRate}%</td>
-                <td>${totalAverageScore}</td>
-            </tr>
-        `;
+            totalBody.innerHTML += `
+                <tr>
+                    <td>${group}</td>
+                    <td>${totalResponseRate}%</td>
+                    <td>${totalAverageScore}</td>
+                </tr>
+            `;
+        }
     }
-}
 
 </script>
 

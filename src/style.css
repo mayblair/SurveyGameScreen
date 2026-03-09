@@ -118,6 +118,7 @@ button {
 #resultsScreen {
     padding-right: 120px;   /* left & right padding */
     padding-left: 120px;   /* left & right padding */
+    font-size: 38px;
 }
 
 #questionScreen {
@@ -150,7 +151,7 @@ button {
     border-collapse: collapse;
       background-color: white;
     color: #001146;
-    font-size: 52px;
+    font-size: 48px;
 }
 
 /* Reduce column spacing */

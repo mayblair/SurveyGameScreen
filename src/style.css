@@ -113,12 +113,12 @@ button {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     padding: 30px;
+    font-size: 40px;
 }
 
 #resultsScreen {
     padding-right: 120px;   /* left & right padding */
     padding-left: 120px;   /* left & right padding */
-    font-size: 38px;
 }
 
 #questionScreen {
@@ -151,7 +151,7 @@ button {
     border-collapse: collapse;
       background-color: white;
     color: #001146;
-    font-size: 48px;
+    font-size: 40px;
 }
 
 /* Reduce column spacing */

@@ -113,12 +113,15 @@ button {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     padding: 30px;
-    font-size: 40px;
 }
 
 #resultsScreen {
     padding-right: 120px;   /* left & right padding */
     padding-left: 120px;   /* left & right padding */
+}
+
+#simpleResults {
+    font-size: 40px; /* left & right padding */
 }
 
 #questionScreen {

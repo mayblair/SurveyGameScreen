@@ -148,7 +148,9 @@ button {
     max-width: 900px;     /* keeps table centered */
     margin: 0 auto;
     border-collapse: collapse;
-    font-size: 18px;
+      background-color: white;
+    color: #001146;
+    font-size: 52px;
 }
 
 /* Reduce column spacing */

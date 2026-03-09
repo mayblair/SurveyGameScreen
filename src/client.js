@@ -1,5 +1,6 @@
 const socket = io();
 
+// ---------------- DOM ELEMENTS ----------------
 
 const joinScreen = document.getElementById("joinScreen");
 const waitingScreen = document.getElementById("waitingScreen");
@@ -9,10 +10,14 @@ const resultsScreen = document.getElementById("resultsScreen");
 const timerEl = document.getElementById("timer");
 const questionEl = document.getElementById("question");
 const answersEl = document.getElementById("answers");
-const resultsContainer = document.getElementById("resultsContainer");
+const supplementaryEl = document.getElementById("supplementaryText");
+const resultsContainer = document.getElementById("simpleResults");
+
+// ---------------- STATE ----------------
 
 let hasAnswered = false;
 let currentQuestionId = null;
+let hasJoined = false;
 
 const totalStudents = {
     "Class 1": 187,
@@ -21,54 +26,53 @@ const totalStudents = {
     "Class 4": 162
 };
 
-
 // ---------------- JOIN ----------------
 
 document.querySelectorAll(".group-btn").forEach(btn => {
     btn.addEventListener("click", () => {
 
-        localStorage.setItem("group", btn.innerText);
-
+        const group = btn.innerText;
+        localStorage.setItem("group", group);
         btn.classList.add("selected");
 
-        setTimeout(() => {
-            showScreen("waiting");
-        }, 500);
+        hasJoined = true;
 
+        socket.emit("joinClass", { group });
+
+        showScreen("waiting");
     });
 });
 
-// ---------------- STATE UPDATES ----------------
+// ---------------- SOCKET STATE UPDATES ----------------
 
 socket.on("updateState", (state) => {
 
-    if (state.currentScreen === "join") {
+    if (!hasJoined) {
         showScreen("join");
+        return;
     }
 
+    // QUESTION
     if (state.currentScreen === "question" && state.currentQuestion) {
         showScreen("question");
         renderQuestion(state);
+        return;
     }
 
+    // ANSWER
+    if (state.currentScreen === "answer" && state.currentQuestion) {
+        showScreen("question");
+        renderQuestion(state);
+        revealAnswer(state);
+        return;
+    }
+
+    // RESULTS
     if (state.currentScreen === "results") {
         showScreen("results");
         renderResults(state);
+        return;
     }
-
-    if (state.currentScreen === "answer") {
-
-        document.getElementById("supplementaryText").innerText =
-            state.currentQuestion.explanation;
-
-        // highlight correct answer
-        document.querySelectorAll(".answer-btn").forEach(btn => {
-            if (btn.innerText === state.currentQuestion.correct) {
-                btn.style.background = "green";
-            }
-        });
-    }
-
 });
 
 // ---------------- SCREEN CONTROL ----------------
@@ -103,14 +107,13 @@ function showScreen(screen) {
     }
 }
 
-
-// ---------------- QUESTION ----------------
+// ---------------- QUESTION RENDER ----------------
 
 function renderQuestion(state) {
 
     timerEl.innerText = state.timer;
 
-    // If this is a NEW question
+    // If new question
     if (state.currentQuestion.id !== currentQuestionId) {
 
         currentQuestionId = state.currentQuestion.id;
@@ -118,6 +121,7 @@ function renderQuestion(state) {
 
         questionEl.innerText = state.currentQuestion.question;
         answersEl.innerHTML = "";
+        supplementaryEl.style.display = "none";
 
         state.currentQuestion.answers.forEach(ans => {
 
@@ -128,19 +132,23 @@ function renderQuestion(state) {
             btn.onclick = () => {
 
                 if (hasAnswered) return;
+                if (state.timer <= 0) return;
 
                 hasAnswered = true;
 
                 const group = localStorage.getItem("group");
 
-                socket.emit("submitAnswer", { group, answer: ans });
+                socket.emit("submitAnswer", {
+                    group,
+                    answer: ans,
+                    questionId: state.currentQuestion.id
+                });
 
-                if (ans === state.currentQuestion.correct) {
-                    btn.style.background = "green";
-                } else {
-                    btn.style.background = "red";
-                }
+                btn.style.backgroundColor = "#cccccc";  // neutral gray
+                btn.style.color = "#001146";
+                btn.style.border = "2px solid #001146";
 
+                // Disable ALL buttons
                 document.querySelectorAll(".answer-btn")
                     .forEach(b => b.disabled = true);
             };
@@ -150,100 +158,58 @@ function renderQuestion(state) {
     }
 }
 
+// ---------------- ANSWER REVEAL ----------------
 
+function revealAnswer(state) {
+
+    // Disable answering
+    document.querySelectorAll(".answer-btn")
+        .forEach(b => b.disabled = true);
+
+    // Highlight correct answer
+    document.querySelectorAll(".answer-btn").forEach(btn => {
+        if (btn.innerText === state.currentQuestion.correct) {
+            btn.style.backgroundColor = "#2ecc71";
+            btn.style.color = "white";
+        }
+    });
+
+    // Show explanation only if exists
+    if (state.currentQuestion.explanation) {
+        supplementaryEl.style.display = "block";
+        supplementaryEl.innerText = state.currentQuestion.explanation;
+    } else {
+        supplementaryEl.style.display = "none";
+    }
+}
 
 // ---------------- RESULTS ----------------
 
 function renderResults(state) {
 
-    const container = document.getElementById("simpleResults");
-    container.innerHTML = "";
+    resultsContainer.innerHTML = "";
 
-    for (let group in state.groupScores) {
+    let rows = [];
 
-        container.innerHTML += `
+    for (let group in state.totalScores) {
+        rows.push({
+            group,
+            score: state.totalScores[group]
+        });
+    }
+
+    // Sort descending
+    rows.sort((a, b) => b.score - a.score);
+
+    rows.forEach(r => {
+        resultsContainer.innerHTML += `
             <div style="font-size:24px; margin:15px;">
-                ${group}: ${state.groupScores[group]} points
+                ${r.group}: ${r.score} points
             </div>
         `;
-    }
+    });
 }
-//
-//function renderResults(state) {
-//
-//    const currentBody = document.getElementById("currentResults");
-//    const totalBody = document.getElementById("totalResults");
-//
-//    currentBody.innerHTML = "";
-//    totalBody.innerHTML = "";
-//
-//    let currentRows = [];
-//    let totalRows = [];
-//
-//    for (let group in state.groupScores) {
-//
-//        const classSize = totalStudents[group] || 1;
-//
-//        // ---------- CURRENT QUESTION ----------
-//        const currentResponses = state.groupResponses[group];
-//        const currentScore = state.groupScores[group];
-//
-//        const currentResponseRate = Math.round(
-//            (currentResponses / classSize) * 100
-//        );
-//
-//        currentRows.push({
-//            group,
-//            responseRate: currentResponseRate,
-//            score: currentScore
-//        });
-//
-//        // ---------- TOTAL GAME ----------
-//        const totalResponses = state.totalResponses[group];
-//        const totalScore = state.totalScores[group];
-//
-//        const totalResponseRate = state.questionsPlayed > 0
-//            ? Math.round(
-//                (totalResponses / (classSize * state.questionsPlayed)) * 100
-//              )
-//            : 0;
-//
-//        const averageScore = state.questionsPlayed > 0
-//            ? Math.round(totalScore / state.questionsPlayed)
-//            : 0;
-//
-//        totalRows.push({
-//            group,
-//            responseRate: totalResponseRate,
-//            score: averageScore
-//        });
-//    }
-//
-//    // TODO SORT BY SCORE DESCENDING
-//
-//    currentRows.forEach(r => {
-//        currentBody.innerHTML += `
-//            <tr>
-//                <td>${r.group}</td>
-//                <td>${r.responseRate}%</td>
-//                <td class="score-cell" data-target="${r.score}">0</td>
-//            </tr>
-//        `;
-//    });
-//
-//    totalRows.forEach(r => {
-//        totalBody.innerHTML += `
-//            <tr>
-//                <td>${r.group}</td>
-//                <td>${r.responseRate}%</td>
-//                <td class="score-cell" data-target="${r.score}">0</td>
-//            </tr>
-//        `;
-//    });
-//
-//    // TODO animateScores();
-//}
-//
 
+// ---------------- INITIAL LOAD ----------------
 
-showScreen("join"); //show join screen on startup
+showScreen("join");

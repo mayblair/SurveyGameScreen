@@ -8,6 +8,75 @@ const io = new Server(server);
 
 let countdownInterval = null;
 
+let questions = [
+    {
+        question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
+        answers: ["Dishwasher", "Electric Refrigerator", "Coffee Filter", "Toaster"],
+        correct: "Dishwasher",
+        explanation: "While Cochrane invented the dishwasher, all other appliances mentioned were invented by other women."
+    },
+    {
+        question: "How long after Bobbi Gibbs became the first woman to complete the Boston Marathon in 1966, did it become legal for women to register in major marathons?",
+        answers: ["7 months", "2 years", "6 years", "15 years"],
+        correct: "6 years",
+        explanation: "Women like Bobbi Gibbs and Kathrine Switzer, pictured running in the 1967 Boston marathon despite physical attempts to remove her, challenged the narrative that women were “too fragile for long distance running”"
+    },
+    {
+        question: "Which of these famous actresses are Milton Academy alumni?",
+        answers: ["Jenny Slate", "Zoe Saldana", "Kate Siegel", "Octavia Spencer"],
+        correct: "Jenny Slate",
+        explanation: "After graduating Class of ’00, Slate went on to co-create an Oscar-nominated short film and join the 35th season of SNL as a cast member. She has since been featured in many films, including her role as Allysa in “It Ends With Us.”"
+    },
+    {
+        question: "How many weeks of paid maternity leave are the majority of people who give birth in America receiving?",
+        answers: ["0", "5", "12", "15"],
+        correct: "0",
+        explanation: "Only 12-41% of birthing people, differing between the private and public sector, have any access to paid maternity leave. Even so, only 54% are eligible for the Family and Medical Leave Act, which guarantees 12 weeks of UNPAID job protection."
+    },
+    {
+        question: "Women earned an average of ____ of what men earned in 2024?",
+        answers: ["53%", "85%", "60%", "93%"],
+        correct: "85%",
+        explanation: "While equal pay laws have been in effect for more than 60 years, it is estimated the gender pay gap will not close until 2058."
+    },
+    {
+        question: "Despite making up more than 60% of college graduates in 2025, women are the most under represented in which major?",
+        answers: ["Engineering", "Computer Science", "Physics", "Mathematics"],
+        correct: "Computer Science",
+        explanation: "While women only make up 21% of computer science bachelor's degrees, the numbers for Engineering and Physics graduates also remain under 25%."
+    },
+    {
+        question: "What percentage of the people in Milton CS classes were non-male identifying in 2024?",
+        answers: ["53%", "41%", "60%", "33%"],
+        correct: "41%",
+        explanation: ""
+    },
+    {
+        question: "What percentage of the people in Milton CS classes were non-male identifying in 2025?",
+        answers: ["53%", "41%", "60%", "33%"],
+        correct: "33%",
+        explanation: ""
+    },
+    {
+        question: "After being the No. 1 pick in the 2024 WNBA Draft, Caitlin Clark agreed to a 4 year contract with the Indiana Fever. How much does she make yearly from this?",
+        answers: ["2.5 million", "50,514", "84,514", "1.5 million"],
+        correct: "84,514",
+        explanation: "As of last year she made an estimated an extra 16 million from outside endorsements. Zaccharie Risacher, the No. 1 pick in the 2024 NBA Draft signed a similar contract that earns him 14.2 million annually."
+    },
+    {
+        question: "Which of Milton’s sports teams were ISL champions the last 3 years?",
+        answers: ["Girls Varsity Squash", "Boys Varsity Squash", "Girls Varsity Swim", "Boys Varsity Swim"],
+        correct: "Girls Varsity Swim",
+        explanation: ""
+    },
+    {
+        question: "How many female Milton students are committed to play their sport at a collegiate level?",
+        answers: ["20", "12", "14", "18"],
+        correct: "18",
+        explanation: "Congrats to the 12 seniors, 6 juniors, and many more to come!!\n(C. DiAdamo, S. Crowly, K. Xue, L. Rubeiz, E. Trefethen, C. Khan, M. Quatrale, A. Scannell, C. Banbury, R. Vaughan, T. Schoettle, L. Bourell S. Callahan, B. Hunt, S. Salmon, L. Garrity, E. O’Rourke, M. Ruland)"
+    },
+];
+
 
 // ----------------------------
 // Game State
@@ -17,6 +86,8 @@ let gameState = {
     currentScreen: "join", // join | question | results
     timer: 20,
     currentQuestion: null,
+    question_index: 0,
+    totalQuestions: questions.length,
     groupScores: {
         "Class 1": 0,
         "Class 2": 0,
@@ -44,50 +115,16 @@ let gameState = {
     questionsPlayed: 0
 };
 
-let questions = [
-    {
-        question: "How many weeks of paid maternity leave are the majority of people who give birth in America receiving?",
-        answers: ["0", "5", "12", "15"],
-        correct: "0",
-        explanation: "Only 12-41% of birthing people, differing between the private and public sector, have any access to paid maternity leave. Even so, only 54% are eligible for the Family and Medical Leave Act, which guarantees 12 weeks of UNPAID job protection."
-    },
-    {
-        question: "How long after Bobbi Gibbs became the first woman to complete the Boston Marathon in 1966, did it become legal for women to register in major marathons?",
-        answers: ["7 months", "2 years", "6 years", "15 years"],
-        correct: "6 years",
-        explanation: "Women like Bobbi Gibbs and Kathrine Switzer, pictured running in the 1967 Boston marathon despite physical attempts to remove her, challenged the narrative that women were “too fragile for long distance running”"
-    },
-    {
-        question: "What common kitchen appliance was invented by Josephine Cochrane in 1886?",
-        answers: ["Dishwasher", "Electric Refrigerator", "Coffee Filter", "Toaster"],
-        correct: "Dishwasher",
-        explanation: "While Cochrane invented the dishwasher, all other appliances mentioned were invented by other women."
-    },
-    {
-        question: "What percentage of the people in Milton CS classes were non-male identifying in 2024?",
-        answers: ["53%", "41%", "60%", "33%"],
-        correct: "41%",
-        explanation: ""
-    },
-    {
-        question: "Women earned an average of ____ of what men earned in 2024?",
-        answers: ["53%", "85%", "60%", "33%"],
-        correct: "85%"
-        explanation: ""
-    },
-        question: "What percentage of the people in Milton CS classes were non-male identifying in 2025?",
-        answers: ["53%", "41%", "60%", "33%"],
-        correct: "33%",
-        explanation: ""
-    }
-];
-
 // ----------------------------
 // Randomize Question + Answers
 // ----------------------------
 
 function getRandomQuestion() {
-    const q = questions[Math.floor(Math.random() * questions.length)];
+//    const q = questions[Math.floor(Math.random() * questions.length)];
+    if (gameState.question_index >= questions.length) {
+        return null;
+    }
+    const q = questions[gameState.question_index];
 
     let shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
 
@@ -106,8 +143,16 @@ function getRandomQuestion() {
 
 io.on("connection", (socket) => {
 
+    socket.on("joinClass", ({ group }) => {
+        socket.emit("updateState", gameState);
+    });
 
     socket.on("startQuestion", () => {
+        if (gameState.question_index >= questions.length) {
+            gameState.currentScreen = "results";
+            io.emit("updateState", gameState);
+            return;
+        }
         // do not generate new question if not on results screen
        if (gameState.currentScreen !== "join" && gameState.currentScreen !== "results")
         {   return;   }
@@ -115,7 +160,7 @@ io.on("connection", (socket) => {
         gameState.currentQuestion = getRandomQuestion();
         gameState.currentScreen = "question";
         gameState.timer = 20;
-
+        gameState.question_index++;
 
         // reset responses each round
         for (let group in gameState.groupResponses) {
@@ -143,10 +188,14 @@ io.on("connection", (socket) => {
 
 
     socket.on("showResults", () => {
+        if (gameState.currentScreen !== "answer") return;
         //add to total participation rate and score info
         for (let group in gameState.groupScores) {
+            if (!gameState.groupScores.hasOwnProperty(group)) continue;
             gameState.totalScores[group] += gameState.groupScores[group];
+            gameState.groupScores[group] = 0;
             gameState.totalResponses[group] += gameState.groupResponses[group];
+            gameState.groupResponses[group] = 0;
         }
 
         gameState.questionsPlayed++;
@@ -157,7 +206,18 @@ io.on("connection", (socket) => {
 
 
     
-    socket.on("submitAnswer", ({ group, answer }) => {
+    socket.on("submitAnswer", ({ group, answer, questionId }) => {
+
+       if (!gameState.currentQuestion) return;
+       if (questionId !== gameState.currentQuestion.id) return;
+       if (gameState.currentScreen !== "question") return;
+       if (gameState.timer <= 0) return;
+       if (!group || !gameState.groupScores.hasOwnProperty(group)) return;
+       if (!answer ||
+           !gameState.currentQuestion.answers.includes(answer)) {
+           return;
+       }
+
         if (!gameState.groupResponses[group]) {
             gameState.groupResponses[group] = 0;
         }
@@ -171,9 +231,43 @@ io.on("connection", (socket) => {
 
     socket.on("showAnswer", () => {
 
-        if (gameState.currentScreen !== "question") return;
+        if (gameState.currentScreen === "results") return;
+
+        // Stop timer if running
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
 
         gameState.currentScreen = "answer";
+
+        io.emit("updateState", gameState);
+    });
+
+    socket.on("resetGame", () => {
+
+        gameState.totalScores = {
+            "Class 1": 0,
+            "Class 2": 0,
+            "Class 3": 0,
+            "Class 4": 0
+        };
+
+        gameState.totalResponses = {
+            "Class 1": 0,
+            "Class 2": 0,
+            "Class 3": 0,
+            "Class 4": 0
+        };
+
+        gameState.questionsPlayed = 0;
+        gameState.currentScreen = "join";
+        gameState.question_index = 0;
+        gameState.timer = 20;
+        gameState.currentQuestion = null;
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+
         io.emit("updateState", gameState);
     });
 

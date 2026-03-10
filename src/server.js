@@ -75,6 +75,55 @@ let questions = [
         correct: "18",
         explanation: "Congrats to the 12 seniors, 6 juniors, and many more to come!!\n(C. DiAdamo, S. Crowly, K. Xue, L. Rubeiz, E. Trefethen, C. Khan, M. Quatrale, A. Scannell, C. Banbury, R. Vaughan, T. Schoettle, L. Bourell S. Callahan, B. Hunt, S. Salmon, L. Garrity, E. O’Rourke, M. Ruland)"
     },
+    {
+        question: "When Milton Academy was founded in 1798, what kind of school was it?",
+        answers: ["Boys-only school", "Girls-only school", "Girls and boys (separate schools)", "Girls and boys (coeducational)"],
+        correct: "Girls and boys (coeducational)",
+        explanation: ""
+    },
+    {
+        question: "These are the top 4 women CEOs of the United States’ largest companies. Which one went to Milton?",
+        answers: ["Mary T. Barra", "Gail K. Boudreaux", "Jane Fraser", "Sarah London"],
+        correct: "Sarah London",
+        explanation: ""
+    },
+    {
+        question: "How many girls at Milton won a Scholastic Art and/or Writing Award this year?",
+        answers: ["20", "22", "32", "40"],
+        correct: "32",
+        explanation: ""
+    },
+    {
+        question: "Which scientist discovered the structure of DNA alongside James Watson and Francis Crick but did not receive the Nobel Prize?",
+        answers: ["Rosalind Franklin", "Barbara McClintock", "Dorothy Hodgkin", "Ada Yonath"],
+        correct: "Rosalind Franklin",
+        explanation: ""
+    },
+    {
+        question: "1 in 3 women will experience what in their lifetime?",
+        answers: ["Marriage", "Loss of a loved one", "physical and/or sexual assault", "divorce"],
+        correct: "physical and/or sexual assault",
+        explanation: ""
+    },
+    {
+        question: "American entertainer Josephine Baker worked as a spy for the French Resistance during World War II. What object did she use to smuggle information to the Allies?",
+        answers: ["Board game", "Sheet music", "Cigarettes", "Ping-Pong Paddle"],
+        correct: "Sheet music",
+        explanation: ""
+    },
+    {
+        question: "On average, how many years do women outlive men by?",
+        answers: ["8.8", "5.5", "2.2", "0"],
+        correct: "5.5",
+        explanation: ""
+    },
+    {
+        question: "Ancient Egyptian royalty popularized the use of what material in order to make lipstain?",
+        answers: ["Beets," "Madder Root", "Bronze", "Carmine Beetles"],
+        correct: "Carmine Beetles",
+        explanation: ""
+    },
+
 ];
 
 

@@ -119,11 +119,10 @@ let questions = [
     },
     {
         question: "Ancient Egyptian royalty popularized the use of what material in order to make lipstain?",
-        answers: ["Beets," "Madder Root", "Bronze", "Carmine Beetles"],
+        answers: ["Beets", "Madder Root", "Bronze", "Carmine Beetles"],
         correct: "Carmine Beetles",
         explanation: ""
-    },
-
+    }
 ];
 
 

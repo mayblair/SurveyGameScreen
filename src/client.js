@@ -204,7 +204,7 @@ function renderResults(state) {
 
     rows.forEach(r => {
         resultsContainer.innerHTML += `
-            <div style="font-size:35px; margin:15px;">
+            <div style="font-size:50px; margin:15px;">
                 ${r.group}: ${r.score} points
             </div>
         `;

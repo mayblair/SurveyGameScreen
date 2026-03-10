@@ -121,8 +121,9 @@ function renderQuestion(state) {
 
         questionEl.innerText = state.currentQuestion.question;
         answersEl.innerHTML = "";
-        supplementaryEl.style.display = "none";
-
+        if (supplementaryEl) {
+            supplementaryEl.style.display = "none";
+        }
         state.currentQuestion.answers.forEach(ans => {
 
             const btn = document.createElement("button");
@@ -175,10 +176,10 @@ function revealAnswer(state) {
     });
 
     // Show explanation only if exists
-    if (state.currentQuestion.explanation) {
+    if (state.currentQuestion.explanation && supplementaryEl) {
         supplementaryEl.style.display = "block";
         supplementaryEl.innerText = state.currentQuestion.explanation;
-    } else {
+    } else if (supplementaryEl) {
         supplementaryEl.style.display = "none";
     }
 }

@@ -25,46 +25,17 @@
 
 <!-- QUESTION SCREEN -->
 <div id="questionScreen" class="screen orange-bg" style="display:none;">
+    <h3 id="questionCounter" style="margin-bottom:10px;"></h3>
     <h2 id="timer"></h2>
     <h1 id="question"></h1>
     <div id="answers" class="button-grid"></div>
+    <div id="supplementaryText" class="supplementary-box"></div>
 </div>
 
 <!-- RESULTS SCREEN -->
 <div id="resultsScreen" class="screen blue-bg" style="display:none;">
     <h1>Results</h1>
-
-    <div class="results-grid">
-
-        <div>
-            <h2>Current Question</h2>
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th>Class</th>
-                        <th>Response Rate</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody id="currentResults"></tbody>
-            </table>
-        </div>
-
-        <div>
-            <h2>Total Game</h2>
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th>Class</th>
-                        <th>Response Rate</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody id="totalResults"></tbody>
-            </table>
-        </div>
-
-    </div>
+    <div id="simpleResults"></div>
 </div>
 
 

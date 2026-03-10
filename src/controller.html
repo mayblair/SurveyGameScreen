@@ -1,28 +1,228 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Controller</title>
     <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
+
 <body class="orange-bg">
 
-<h1>Teacher Controller</h1>
+<h1>Women's History Month Milton Trivia</h1>
 
-<div class="button-grid">
-    <button onclick="start()">Next Question</button>
-    <button onclick="results()">Show Results</button>
+<!-- QUESTION DISPLAY -->
+<div id="questionScreen">
+    <h2 id="timer"></h2>
+    <h1 id="question"></h1>
+
+    <div id="answers" class="button-grid"></div>
+
+    <div id="verticalProgressContainer">
+        <div id="verticalProgressBar"></div>
+    </div>
+
+    <div id="responsePercent" style="margin-top:8px; font-size:18px;"></div>
+
+    <div id="supplementaryText" class="supplementary-box"></div>
+    <h3 id="questionCounter"></h3>
+
+</div>
+
+<!-- RESULTS DISPLAY -->
+<div id="resultsScreen" class="screen blue-bg" style="display:none;">
+    <h1>Results</h1>
+
+    <table class="results-table">
+        <thead>
+        <tr>
+            <th>Class</th>
+            <th>Response Rate</th>
+            <th>Score</th>
+        </tr>
+        </thead>
+        <tbody id="totalResults"></tbody>
+    </table>
+
+</div>
+
+<!-- CONTROL BUTTONS -->
+<div class="controller-buttons">
+    <button onclick="startQuestion()">Next Question</button>
+    <button onclick="showAnswer()">Show Answer</button>
+    <button onclick="showResults()">Show Results</button>
+    <button onclick="resetGame()">Reset Game</button>
 </div>
 
 <script>
-const socket = io();
 
-function start() {
-    socket.emit("startQuestion");
-}
+    const socket = io();
 
-function results() {
-    socket.emit("showResults");
-}
+    const timerEl = document.getElementById("timer");
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const supplementaryEl = document.getElementById("supplementaryText");
+    const resultsScreen = document.getElementById("resultsScreen");
+    const questionScreen = document.getElementById("questionScreen");
+
+    const totalStudents = {
+        "Class 1": 187,
+        "Class 2": 189,
+        "Class 3": 173,
+        "Class 4": 162
+    };
+
+    let currentQuestionId = null;
+
+    socket.on("updateState", (state) => {
+
+        // QUESTION SCREEN
+        if (state.currentScreen === "question" && state.currentQuestion) {
+
+            document.body.classList.remove("blue-bg");
+            document.body.classList.add("orange-bg");
+
+            questionScreen.style.display = "block";
+            resultsScreen.style.display = "none";
+
+            document.getElementById("questionCounter").innerText =
+            state.question_index + " / " + state.totalQuestions;
+
+            timerEl.innerText = state.timer;
+            questionEl.innerText = state.currentQuestion.question;
+
+            // Live response rate calculation
+            let totalStudentsAll = 0;
+            let totalResponsesAll = 0;
+
+            for (let group in state.groupResponses) {
+                totalStudentsAll += totalStudents[group] || 0;
+                totalResponsesAll += state.groupResponses[group];
+            }
+
+            const percent = totalStudentsAll > 0
+                ? Math.round((totalResponsesAll / totalStudentsAll) * 100)
+                : 0;
+
+            // Update vertical bar height
+            document.getElementById("verticalProgressBar").style.height = percent + "%";
+            document.getElementById("verticalProgressContainer").style.display = "block";
+
+            if (state.currentQuestion.id !== currentQuestionId) {
+
+                currentQuestionId = state.currentQuestion.id;
+                answersEl.innerHTML = "";
+                supplementaryEl.innerText = "";
+
+                state.currentQuestion.answers.forEach(ans => {
+
+                    const btn = document.createElement("button");
+                    btn.innerText = ans;
+                    btn.className = "answer-btn";
+                    btn.disabled = true;
+
+                    answersEl.appendChild(btn);
+                });
+            }
+        }
+
+        // ANSWER SCREEN
+        if (state.currentScreen === "answer" && state.currentQuestion) {
+
+            // Highlight correct answer
+            document.querySelectorAll(".answer-btn").forEach(btn => {
+                if (btn.innerText === state.currentQuestion.correct) {
+                    btn.style.backgroundColor = "#2ecc71";
+                    btn.style.color = "white";
+                }
+            });
+
+            // Show explanation ONLY if it exists
+            if (state.currentQuestion.explanation && state.currentQuestion.explanation.trim() !== "") {
+                supplementaryEl.style.display = "block";
+                supplementaryEl.innerText = state.currentQuestion.explanation;
+            } else {
+                supplementaryEl.style.display = "none";
+                supplementaryEl.innerText = "";
+            }
+        }
+
+        // RESULTS SCREEN
+        if (state.currentScreen === "results") {
+            document.getElementById("verticalProgressContainer").style.display = "none";
+
+            document.body.classList.remove("orange-bg");
+            document.body.classList.add("blue-bg");
+
+            questionScreen.style.display = "none";
+            resultsScreen.style.display = "block";
+
+            renderResults(state);
+
+        }
+
+        if (state.currentScreen === "join") {
+            if (!hasJoined) {
+                showScreen("join");
+            }
+            return;
+        }
+    });
+
+    function startQuestion() {
+        socket.emit("startQuestion");
+    }
+
+    function showAnswer() {
+        socket.emit("showAnswer");
+    }
+
+    function showResults() {
+        socket.emit("showResults");
+    }
+
+    function resetGame() {
+        socket.emit("resetGame");
+    }
+
+    function renderResults(state) {
+
+        const totalBody = document.getElementById("totalResults");
+        totalBody.innerHTML = "";
+
+        let rows = [];
+
+        for (let group in state.totalScores) {
+
+            const classSize = totalStudents[group] || 1;
+
+            const totalResponseRate = state.questionsPlayed > 0
+                ? Math.ceil(
+                    (state.totalResponses[group] / (classSize * state.questionsPlayed)) * 100
+                  )
+                : 0;
+
+            const totalScore = state.totalScores[group];
+
+            rows.push({
+                group,
+                responseRate: totalResponseRate,
+                score: totalScore
+            });
+        }
+
+        rows.sort((a, b) => b.score - a.score);
+
+        rows.forEach(r => {
+            totalBody.innerHTML += `
+                <tr>
+                    <td>${r.group}</td>
+                    <td>${r.responseRate}%</td>
+                    <td>${r.score}</td>
+                </tr>
+            `;
+        });
+    }
+
 </script>
 
 </body>

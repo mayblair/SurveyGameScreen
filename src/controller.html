@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
-
+<audio id="questionMusic" src="noise.m4a" loop></audio>
 <body class="orange-bg">
 
 <h1>Women's History Month Milton Trivia</h1>
@@ -63,6 +63,8 @@
     const supplementaryEl = document.getElementById("supplementaryText");
     const resultsScreen = document.getElementById("resultsScreen");
     const questionScreen = document.getElementById("questionScreen");
+    const music = document.getElementById("questionMusic");
+
 
     const totalStudents = {
         "Class 1": 187,
@@ -83,6 +85,11 @@
 
             questionScreen.style.display = "block";
             resultsScreen.style.display = "none";
+
+            if (music.paused) {
+                music.currentTime = 0;
+                music.play().catch(() => {});
+            }
 
             document.getElementById("questionCounter").innerText =
             state.question_index + " / " + state.totalQuestions;
@@ -128,6 +135,9 @@
         // ANSWER SCREEN
         if (state.currentScreen === "answer" && state.currentQuestion) {
 
+            music.pause();
+            music.currentTime = 0;
+
             // Highlight correct answer
             document.querySelectorAll(".answer-btn").forEach(btn => {
                 if (btn.innerText === state.currentQuestion.correct) {
@@ -148,6 +158,8 @@
 
         // RESULTS SCREEN
         if (state.currentScreen === "results") {
+            music.pause();
+            music.currentTime = 0;
             document.getElementById("verticalProgressContainer").style.display = "none";
 
             document.body.classList.remove("orange-bg");

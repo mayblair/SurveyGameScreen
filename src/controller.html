@@ -60,7 +60,7 @@
     const timerEl = document.getElementById("timer");
     const questionEl = document.getElementById("question");
     const answersEl = document.getElementById("answers");
-    const supplementaryEl = document.getElementById("supplementaryText");
+    const supplementaryEl = document.getElementById("supplementaryText") || null;
     const resultsScreen = document.getElementById("resultsScreen");
     const questionScreen = document.getElementById("questionScreen");
     const music = document.getElementById("questionMusic");
@@ -118,8 +118,9 @@
 
                 currentQuestionId = state.currentQuestion.id;
                 answersEl.innerHTML = "";
-                supplementaryEl.innerText = "";
-
+                if (supplementaryEl) {
+                    supplementaryEl.innerText = "";
+                }
                 state.currentQuestion.answers.forEach(ans => {
 
                     const btn = document.createElement("button");
@@ -148,11 +149,15 @@
 
             // Show explanation ONLY if it exists
             if (state.currentQuestion.explanation && state.currentQuestion.explanation.trim() !== "") {
-                supplementaryEl.style.display = "block";
-                supplementaryEl.innerText = state.currentQuestion.explanation;
+                if (supplementaryEl) {
+                    supplementaryEl.style.display = "block";
+                    supplementaryEl.innerText = state.currentQuestion.explanation;
+                }
             } else {
-                supplementaryEl.style.display = "none";
-                supplementaryEl.innerText = "";
+                if (supplementaryEl) {
+                    supplementaryEl.style.display = "none";
+                    supplementaryEl.innerText = "";
+                }
             }
         }
 
